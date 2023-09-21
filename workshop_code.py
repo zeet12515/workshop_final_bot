@@ -1,0 +1,500 @@
+import os
+import tempfile
+import streamlit as st
+from langchain.document_loaders.unstructured import UnstructuredFileLoader
+
+#direct load into vector stores
+def direct_vectorstore_function():
+
+    def get_file_extension(file_name):
+        return os.path.splitext(file_name)[1]
+
+    st.subheader("Upload File for VectorStore")
+
+    # Streamlit file uploader to accept file input
+    uploaded_file = st.file_uploader("Choose a file", type=['docx', 'txt', 'pdf'])
+
+    if uploaded_file:
+
+        # Reading file content
+        file_content = uploaded_file.read()
+
+        # Determine the suffix based on uploaded file's name
+        file_suffix = get_file_extension(uploaded_file.name)
+
+        # Saving the uploaded file temporarily to process it
+        with tempfile.NamedTemporaryFile(delete=False, suffix=file_suffix) as temp_file:
+            temp_file.write(file_content)
+            temp_file.flush()  # Ensure the data is written to the file
+            temp_file_path = temp_file.name
+
+        # Process the temporary file using UnstructuredFileLoader (or any other method you need)
+        st.write(temp_file_path)
+        loader = UnstructuredFileLoader(temp_file_path)
+        docs = loader.load()
+
+        # Add this docs to vectorstore or any other further processing
+        # ... [YOUR VECTORSTORE CODE HERE]
+
+        st.success("File processed and added to vectorstore!")
+
+        # Removing the temporary file after processing
+        os.remove(temp_file_path)
+
+    else:
+        st.warning("Please upload a file.")
+
+#Modify exercise 9 - include streaming option
+def chat_completion(prompt):
+	response = openai.ChatCompletion.create(
+		model=st.session_state.openai_model,
+		messages=[
+			{"role": "system", "content": st.session_state.prompt_template},
+			{"role": "user", "content": prompt},
+		],
+		temperature= 0# temperature
+		stream=True #stream option
+	)
+	return response
+
+#integration API call into streamlit chat components
+def basebot():
+
+	#Initialize chat history
+	if "chat_msg" not in st.session_state:
+		st.session_state.chat_msg = []
+
+	#Showing Chat history
+	for message in st.session_state.msg:
+		with st.chat_message(message["role"]):
+			st.markdown(message["content"])
+	try:
+		#
+		if prompt := st.chat_input("What is up?"):
+			#set user prompt in chat history
+			st.session_state.msg.append({"role": "user", "content": prompt})
+			with st.chat_message("user"):
+				st.markdown(prompt)
+
+			with st.chat_message("assistant"):
+				message_placeholder = st.empty()
+				full_response = ""
+				for response in chat_completion(prompt):
+					full_response += response.choices[0].delta.get("content", "")
+					message_placeholder.markdown(full_response + "▌")
+				message_placeholder.markdown(full_response)
+			st.session_state.msg.append({"role": "assistant", "content": full_response})
+
+	except Exception as e:
+		st.error(e)
+
+
+
+
+import streamlit as st
+import wikipedia
+import openai
+import pymongo
+import tempfile
+import certifi
+import gridfs
+from langchain.agents import tool
+from langchain.chains import RetrievalQA, RetrievalQAWithSourcesChain
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.chat_models import ChatOpenAI
+from langchain import LLMChain
+from langchain.vectorstores import Chroma,FAISS
+from typing import List, Dict
+from langchain.memory import ConversationBufferMemory, ConversationSummaryBufferMemory
+from langchain.memory.chat_memory import ChatMessageHistory
+from langchain.memory.chat_message_histories import RedisChatMessageHistory
+from langchain.prompts import PromptTemplate
+from langchain.chains.summarize import load_summarize_chain
+from langchain.docstore.document import Document
+
+import requests
+import json
+import configparser
+import os
+config = configparser.ConfigParser()
+config.read('config.ini')
+db_host = st.secrets["db_host"]
+#db_host = config['constants']['db_host']
+serper_key = st.secrets["serpapi"]
+bing_key = st.secrets["bingapi"]
+serper_url = config['constants']['serp_url']
+bing_url = config['constants']['bing_url']
+db_client = config['constants']['db_client']
+client = pymongo.MongoClient(db_host, tlsCAFile=certifi.where())
+db = client[db_client]
+data_collection = db[config['constants']['sd']]
+user_info_collection = db[config['constants']['ui']]
+
+
+
+def get_wikipedia_data(query, max_results=4):
+	try:
+		search_results = wikipedia.search(query,results=max_results)
+		search_results_with_summary_and_url = []
+		st.session_state.tool_use = True
+		st.session_state.source_bot = False
+		st.session_state.related_questions = []
+
+		for i, result in enumerate(search_results):
+			try:
+				page = wikipedia.page(result)
+				#st.write(page)
+				summary = wikipedia.summary(result, sentences=10)
+				#st.write(summary)
+				if i == 0:
+					st.session_state.web_link.append(f'Ref No: {st.session_state.s_count} - {result}')
+					st.session_state.web_link.append(page.url)
+					search_results_with_summary_and_url.append({
+						"title": result,
+						"url": page.url,
+						"summary": summary
+					})
+				else:
+					summary = wikipedia.summary(result, sentences=1)
+					question_info = {
+						"question": result,
+						"snippet": summary,
+						"url": page.url
+					}
+					st.session_state.related_questions.append(question_info)
+			except Exception as e:
+				st.spinner(text="Search in progress...")
+				#st.warning(f"Unable to find Wikipedia resources for {result}: {str(e)}")
+
+		data = {
+			"query": query,
+			"search_results": search_results_with_summary_and_url
+		}
+		return data
+	except Exception as e:
+		st.write(f"Error: {str(e)}")
+		return None
+
+@tool
+def wikipedia_to_json_string(query: str) -> str:
+	"""
+	Searches Wikipedia for the given query and returns the search results
+	with their URLs as a JSON formatted string.
+	"""
+	data = get_wikipedia_data(query)
+	if data:
+		json_string = json.dumps(data, ensure_ascii=False, indent=4)
+		return json_string
+	else:
+		return None
+
+
+
+@tool #tool not in use as there will be a button to consolidate learning - function will be deprecated
+def change_or_end_of_topic(human_input: str) -> str:
+	"""
+	This Change or End of Topic teacher role will engage the human when the human wants to end the topic 
+	or change the topic or attempt to change the topic.	
+	"""
+	st.session_state.consolidate = True
+
+	os.environ["OPENAI_API_KEY"] = st.session_state.api_key
+	os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
+	cb_temperature, cb_max_tokens, cb_n, cb_presence_penalty, cb_frequency_penalty = st.session_state.cb_settings_key.values()  
+	cb_engine = st.session_state.engine_key
+
+	llm = ChatOpenAI(
+				model_name=cb_engine, 
+				temperature=cb_temperature, 
+				max_tokens=cb_max_tokens, 
+				n=cb_n,
+				presence_penalty= cb_presence_penalty,
+				frequency_penalty = cb_frequency_penalty
+				)
+
+	message_history = RedisChatMessageHistory(url=st.secrets['r_password'], ttl=600, session_id=st.session_state.vta_code)
+	#memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
+	memory = ConversationSummaryBufferMemory(llm=llm, memory_key="chat_history", max_token_limit=100, chat_memory=message_history)
+
+	template = """
+	This Change or End of Topic tool will engage the human when the human wants to end the topic or change the topic or attempt to change the topic.
+	This Change or End of Topic tool must create a list of 3 reflective questions before changing into a new topic discussion. The sample list of reflective questions are 
+	1.What did you previously know about the topic we just discussed? 
+	2.What is something new that you have learned about this topic during our conversation? 
+	3.What is an area or aspect of the topic that you would like to explore further or find out more about?
+	You must number you question
+
+	Previous Chat History:
+	{chat_history}
+	Human: {input}
+	"""
+	prompt = PromptTemplate(template=template, input_variables=["input", "chat_history"])
+	llm_chain = LLMChain(prompt=prompt, llm=llm, memory=memory, verbose=True)
+	ans = llm_chain.run(input=human_input)
+
+	return ans
+
+
+def extract_organic_results_and_people_also_ask(response_data: dict) -> dict:
+	organic_results = response_data.get('organic', [])
+	first_result = organic_results[0] if len(organic_results) > 0 else {}
+	second_result = organic_results[1] if len(organic_results) > 1 else {}
+
+	title = first_result.get('title', '')
+	link = first_result.get('link', '')
+
+	st.session_state.web_link.append(f'Ref No: {st.session_state.s_count} - {title}')
+	st.session_state.web_link.append(link)
+
+	snippet_1 = first_result.get('snippet', '')
+	snippet_2 = second_result.get('snippet', '')
+
+	combined_snippet = f"{snippet_1} {snippet_2}"
+
+	people_also_ask = response_data.get('peopleAlsoAsk', [])
+	st.session_state.related_questions = []
+	for question_data in people_also_ask:
+		question = question_data.get('question', '')
+		snippet = question_data.get('snippet', '')
+		link = question_data.get('link', '')
+		question_info = {
+			"question": question,
+			"snippet": snippet,
+			"url": link
+		}
+		st.session_state.related_questions.append(question_info)
+
+	return {
+		"title": title,
+		"url": link,
+		"combined_snippet": combined_snippet
+	}
+
+@tool
+def google_search_serp(query: str) -> str:
+	"""
+	Searches Google for the given query and returns the search results
+	with their titles, URLs, and descriptions as a JSON formatted string.
+	"""
+	st.session_state.tool_use = True
+	st.session_state.source_bot = False
+	payload = json.dumps({
+	  "q": query,
+	  "gl": "sg"
+	})
+	headers = {
+	  'X-API-KEY': serper_key,
+	  'Content-Type': 'application/json'
+	}
+
+	response = requests.request("POST", serper_url, headers=headers, data=payload)
+	response_data = json.loads(response.text)
+	#st.write(response_data)
+	#st.write(type(response_data))
+	final_data = extract_organic_results_and_people_also_ask(response_data)
+	#st.write(st.session_state.related_questions)
+	#st.write(knowledge_graph_data)
+	# Create a dictionary with the query and search_results
+	data = {
+		"query": query,
+		"search_results": [final_data]
+	}
+
+	json_string = json.dumps(data, ensure_ascii=False, indent=4)
+
+	return json_string
+
+
+def extract_bing_results(response_data: dict) -> dict:
+	organic_results = response_data.get('webPages', {}).get('value', [])
+	first_result = organic_results[0] if len(organic_results) > 0 else {}
+	second_result = organic_results[1] if len(organic_results) > 1 else {}
+
+	title = first_result.get('name', '')
+	displaylink = first_result.get('displayUrl', '')
+	#displayUrl = first_result.get('displayUrl', '')
+
+	st.session_state.web_link.append(f'Ref No: {st.session_state.s_count} - {title}')
+	st.session_state.web_link.append(displaylink)
+
+	snippet_1 = first_result.get('snippet', '')
+	snippet_2 = second_result.get('snippet', '')
+
+	combined_snippet = f"{snippet_1} {snippet_2}"
+
+	related_searches = response_data.get('relatedSearches', {}).get('value', [])
+	
+	st.session_state.related_questions = []
+	for i, question_data in enumerate(related_searches[:3]):
+		question = question_data.get('text', '')
+		displayText = question_data.get('displayText', '')
+		link = question_data.get('webSearchUrl', '')
+		question_info = {
+			"question": question,
+			"snippet": displayText,
+			"url": link
+		}
+		st.session_state.related_questions.append(question_info)
+
+	return {
+		"title": title,
+		"url": displaylink,
+		"combined_snippet": combined_snippet
+	}
+
+
+
+@tool
+def bing_search_internet(query: str) -> str:
+	"""
+	Searches Bing internet search for the given query and returns the search results
+	with their titles, URLs, and descriptions as a JSON formatted string.
+	"""
+
+
+	st.session_state.tool_use = True
+	st.session_state.source_bot = False
+	# Add your Bing Search V7 subscription key and endpoint to your environment variables.
+	#subscription_key = os.environ[bing_key]
+	subscription_key = bing_key
+	assert subscription_key
+	# Query term(s) to search for. 
+	# Construct a request
+	mkt = 'en-SG'
+	fil = 'strict'
+
+	params = { 'q': query, 'mkt': mkt, 'safeSearch': fil}
+	headers = { 'Ocp-Apim-Subscription-Key': subscription_key }
+
+	# Call the API
+	try:
+		response = requests.get(bing_url, headers=headers, params=params)
+		response.raise_for_status()
+		response_data = response.json()
+	except Exception as ex:
+		raise ex
+	
+	#response_data = json.loads(response.text)
+	#st.write(response_data)
+	#st.write(type(response_data))
+	final_data = extract_bing_results(response_data)
+	#st.write(st.session_state.related_questions)
+	#st.write(knowledge_graph_data)
+	# Create a dictionary with the query and search_results
+	data = {
+		"query": query,
+		"search_results": [final_data]
+	}
+
+	json_string = json.dumps(data, ensure_ascii=False, indent=4)
+
+	return json_string
+
+# @st.cache_resource
+# def extract_files_from_mongodb(_tch_code):
+# 	# Connect to MongoDB
+# 	fs = gridfs.GridFS(db)
+# 	# Create a temporary directory called tch_code
+# 	temp_dir = tempfile.mkdtemp(prefix=_tch_code)
+
+# 	# Get all the files associated with the given tch_code
+# 	files = fs.find({"tch_code": _tch_code})
+
+# 	# Write the files to the temporary directory
+# 	for file in files:
+# 		# Recreate the directory structure using the relative path metadata
+# 		file_path = os.path.join(temp_dir, file.relative_path)
+# 		os.makedirs(os.path.dirname(file_path), exist_ok=True)
+		
+# 		with open(file_path, "wb") as f:
+# 			f.write(file.read())
+
+# 	return temp_dir
+
+# @st.cache_resource
+# def extract_files_from_mongodb(_tch_code):
+#     # Connect to MongoDB
+#     fs = gridfs.GridFS(db)
+
+#     # Create a temporary directory called tch_code
+#     temp_dir = tempfile.mkdtemp(prefix=_tch_code)
+
+#     # Get all the files associated with the given tch_code
+#     files = fs.find({"tch_code": _tch_code})
+
+#     # Write the files to the temporary directory
+#     for file in files:
+#         file_path = os.path.join(temp_dir, file.filename)
+#         with open(file_path, "wb") as f:
+#             f.write(file.read())
+
+#     return temp_dir
+
+@st.cache_resource
+def load_instance_index(_tch_code):
+	embeddings = OpenAIEmbeddings()
+	#vectordb = Chroma(collection_name=st.session_state.teacher_key, embedding_function=embeddings, persist_directory=_temp_dir)
+	#vectordb = Pinecone.from_existing_index(st.secrets["pine_index"], embeddings, _tch_code)
+	vectordb = FAISS.load_local(_tch_code, embeddings)
+
+	return vectordb
+
+@tool
+def document_search(query: str) ->str:
+	"""
+	Searches vectorstore for anything related to class notes and materials for the given query in the topic and returns the search results
+	with their titles, URLs, and descriptions as a JSON formatted string.
+	"""
+	openai.api_key  = st.session_state.api_key
+	os.environ["OPENAI_API_KEY"] = st.session_state.api_key
+	os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+	os.environ["LANGCHAIN_HANDLER"] = "langchain" 
+	cb_temperature, cb_max_tokens, cb_n, cb_presence_penalty, cb_frequency_penalty = st.session_state.cb_settings_key.values()  
+	cb_engine = st.session_state.engine_key
+
+	docsearch = load_instance_index(st.session_state.teacher_key)
+	retriever = docsearch.as_retriever(search_type="mmr")
+	source_documents = retriever.get_relevant_documents(query)
+	if source_documents:
+		first_doc = source_documents[0]
+		f_source = first_doc.metadata['source']
+		f_topic = first_doc.metadata['topic']
+		f_content = first_doc.page_content
+		f_url = first_doc.metadata['url']
+		
+		st.session_state.web_link.append(f"Ref No: ({st.session_state.s_count})-{f_source}: {f_topic}")
+		st.session_state.web_link.append(f_url)
+
+	st.session_state.related_questions = []
+	if source_documents:
+		for document in source_documents:
+			source = document.metadata['source']
+			topic = document.metadata['topic']
+			page = document.metadata['page']
+			page_content = document.page_content
+			
+			st.session_state.related_questions.append(f"Ref No: ({st.session_state.s_count})-{source}: {topic}, Content page {int(page) + 1}")
+			st.session_state.related_questions.append(page_content)
+
+		st.session_state.tool_use = True
+		st.session_state.source_bot = True
+
+
+	# Format the result
+	formatted_result = {
+		"title": f_topic,
+		"url": f_url,
+		"summary": f_content
+	}
+
+	# Create a dictionary with the query and search_results
+	data = {
+		"query": query,
+		"search_results": [formatted_result]
+	}
+
+	# Convert the data dictionary to a JSON string
+	json_string = json.dumps(data, ensure_ascii=False, indent=4)
+
+	return json_string
