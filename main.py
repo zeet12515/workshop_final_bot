@@ -1,1002 +1,560 @@
+#No need SQLite
 import streamlit as st
-import openai
-from langchain.prompts import PromptTemplate
-#exercis 12
-from langchain.memory import ConversationBufferWindowMemory
-#exercise 13
-from langchain.document_loaders import TextLoader,PyPDFLoader
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import LanceDB
-import lancedb
-import os
-import tempfile
-#exercise 15
-import sqlite3
-import pandas as pd
-import datetime
-#exercise 16
-from langchain.agents import ConversationalChatAgent, AgentExecutor
-from langchain.callbacks import StreamlitCallbackHandler
-from langchain.chat_models import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
-from langchain.tools import DuckDuckGoSearchRun
-#Exercise 17
-from langchain.agents import tool
-import json
-#Exercise 18
-from pandasai import SmartDataframe
-from pandasai.llm.openai import OpenAI
-import matplotlib.pyplot as plt
-
-#Exercise 1: Functions
-def ex1():
-	st.write("Hello World")
-
-# Exercise 2a : Input , Output and Variables
-def ex2():
-	name = st.text_input("Enter your name")
-	# only prints the Hello {name} if input box is not empty
-	if name:
-		st.write("Hello " + name)
-
-#Challenge 2 : Input , Output and Variables
-def ch2():
-	name = st.text_input("Enter your name")
-	gender = st.selectbox("State your gender", ["Male", "Female"])
-	age = st.text_input("State your age", 18)
-
-	if name and gender and age:
-		st.text(f"Hello {name}, you are {gender} and this year you are {age} years old")
-
-
-#Exercise 3 : Logical Conditioning
-def ex3(): 
-	age = st.text_input("State your age", 18)
-	#if else statement
-	age = int(age)
-	if age >= 21:
-		st.write("You are an adult")
-	else:
-		st.write("You are not an adult")
-
-#Exercise 4a : Data and Loops 
-def ex4a():
-	# Data list
-	fruits = ["apple", "banana", "orange"]
-
-	# Dictionary
-	person = {"name": "John", "age": 30, "city": "New York"}
-
-	# For loop to show list
-	st.subheader("Fruits list:")
-	for fruit in fruits:
-		st.write(fruit)
-
-	#for loop to show dictionary list
-	st.subheader("Person dictionary:")
-	for key, value in person.items():
-		st.write(key + ": " + str(value))
-
-	#Exercise 4b - This part I will ask the participants to put in Exercise 4a or earlier to show the sustained data 
-	st.subheader("Session Data:")
-	for data in st.session_state.session_data:
-		st.write(data)
-
-
-#Exercise 4a : session_state
-def ex4b():
-
-	if "session_data" not in st.session_state:
-		st.session_state.session_data = ["alpha", "omega"]
-
-	# For loop to show list
-	st.subheader("Session Data:")
-	for data in st.session_state.session_data:
-		st.write(data)
-
-#Challenge 4 : Data and Loops
-def ch4():
-	name = st.text_input("Enter your name")
-	gender = st.selectbox("State your gender", ["Male", "Female"])
-	age = st.text_input("State your age", 18)
-	#modify ex2 to set into session_state
-	# name = st.session_state.name
-	# age = st.session_state.age
-	# gender = st.session_state.gender 
-
-	#declare empty dictionary
-	mydict = {}
-	mydict["name"] = name
-	mydict["gender"] = gender
-	mydict["age"] = age
-	#Print out the items in the dictionary
-	st.write("Here is your dictionary: ")
-	st.write(mydict)
-
-	#show individual items in dictionary
-	st.write("You can also show individual items in the dictionary like this: ")
-	for key, value in mydict.items():
-		st.write(key + ": " + str(value))
-
-#Exercise 5 : Chatbot UI
-def ex5():
-	st.title("My first chatbot")
-
-	if "store_msg" not in st.session_state:
-		st.session_state.store_msg = []
-
-	prompt = st.chat_input("Say something")
-	if prompt:
-		st.write(f"User has sent the following prompt: {prompt}")
-		st.session_state.store_msg.append(prompt)
-		for message in st.session_state.store_msg:
-			with st.chat_message("user"):
-				st.write(message)
-			with st.chat_message("assistant"):
-				st.write("Hello human, what can I do for you?")
-
-#Exercise 6 : Rule-based Echo Chatbot 
-def ex6():
-	st.title("Echo Bot")
-
-	# Initialize chat history
-	if "messages" not in st.session_state:
-		st.session_state.messages = []
-
-	# Display chat messages from history on app rerun
-	for message in st.session_state.messages:
-		with st.chat_message(message["role"]):
-			st.markdown(message["content"])
-
-	# React to user input
-	if prompt := st.chat_input("What is up?"):
-		# Display user message in chat message container
-		st.chat_message("user").markdown(prompt)
-		# Add user message to chat history
-		st.session_state.messages.append({"role": "user", "content": prompt})
-
-		response = f"Echo: {prompt}"
-		# Display assistant response in chat message container
-		with st.chat_message("assistant"):
-			st.markdown(response)
-		# Add assistant response to chat history
-		st.session_state.messages.append({"role": "assistant", "content": response})
-
-#Challenge 6 : Rule-based If-Else Chatbot
-def ch6():
-	st.title("Rule Based Bot")
-
-	# Initialize chat history
-	if "messages" not in st.session_state:
-		st.session_state.messages = []
-
-	# Display chat messages from history on app rerun
-	for message in st.session_state.messages:
-		with st.chat_message(message["role"]):
-			st.markdown(message["content"])
-
-	# React to user input
-	if prompt := st.chat_input("Enter your query"):
-		if prompt == "Hello":
-			with st.chat_message("user"):
-				st.write("Hello")
-				st.session_state.messages.append({"role": "user", "content": prompt})
-			with st.chat_message("assistant"):
-				reply = "Hi there what can I do for you"
-				st.write(reply)
-				st.session_state.messages.append(
-				{"role": "assistant", "content": reply}
-				)
-
-		elif prompt == "What is your name?":
-			with st.chat_message("user"):
-				st.write("What is your name?")
-				st.session_state.messages.append({"role": "user", "content": prompt})
-			with st.chat_message("assistant"):
-				reply = "My name is EAI , an electronic artificial being"
-				st.write(reply)
-				st.session_state.messages.append(
-				{"role": "assistant", "content": reply}
-				)
-
-		elif prompt == "How old are you?":
-			with st.chat_message("user"):
-				st.write("How old are you?")
-				st.session_state.messages.append({"role": "user", "content": prompt})
-			with st.chat_message("assistant"):
-				reply = "Today is my birthday!"
-				st.write(reply)
-				st.session_state.messages.append(
-				{"role": "assistant", "content": reply}
-				)
-
-		else:
-			with st.chat_message("user"):
-				st.write(prompt)
-				st.session_state.messages.append({"role": "user", "content": prompt})
-			with st.chat_message("assistant"):
-				reply = "I am sorry, I am unable to help you with your query"
-				st.write(reply)
-				st.session_state.messages.append(
-				{"role": "assistant", "content": reply}
-				)
-
-#Exercise 8 : Using the OpenAI API
-def ex8():
-	st.title("Api Call")
-	openai.api_key = st.secrets["openapi_key"]
-	MODEL = "gpt-3.5-turbo"
-
-	response = openai.ChatCompletion.create(
-		model=MODEL,
-		messages=[
-			{"role": "system", "content": "You are a helpful assistant."},
-			{"role": "user", "content": "Tell me about Singapore in the 1970s in 50 words."},
-		],
-		temperature=0,
+from analytics_dashboard import pandas_ai, download_data
+from streamlit_antd_components import menu, MenuItem
+import streamlit_antd_components as sac
+from main_bot import basebot_memory, basebot_qa_memory, clear_session_states, search_bot, basebot, basebot_qa
+from files_module import display_files,docs_uploader, delete_files
+from kb_module import display_vectorstores, create_vectorstore, delete_vectorstores
+from authenticate import login_function,check_password
+from class_dash import download_data_table_csv
+#New schema move function fom settings
+from database_schema import create_dbs
+from database_module import (
+    manage_tables, 
+	delete_tables, 
+	download_database, 
+	upload_database, 
+	upload_s3_database, 
+	download_from_s3_and_unzip, 
+	check_aws_secrets_exist,
+	backup_s3_database,
+	db_was_modified
 	)
-
-	st.markdown("**This is the raw response:**") 
-	st.write(response)
-	st.markdown("**This is the extracted response:**")
-	st.write(response["choices"][0]["message"]["content"].strip())
-	s = str(response["usage"]["total_tokens"])
-	st.markdown("**Total tokens used:**")
-	st.write(s)
-
-
-#Challenge 8: Incorporating the API into your chatbot
-def chat_completion(prompt):
-	openai.api_key = st.secrets["openapi_key"]
-	MODEL = "gpt-3.5-turbo"
-	response = openai.ChatCompletion.create(
-		model=MODEL,
-		messages=[
-			{"role": "system", "content": "You are a helpful assistant."},
-			{"role": "user", "content": prompt},
-		],
-		temperature=0,
-	)
-	return response["choices"][0]["message"]["content"].strip()
-
-def ch8():
-	st.title("My First LLM Chatbot")
-
-	# Initialize chat history
-	if "msg" not in st.session_state:
-		st.session_state.msg = []
-
-	# Display chat chat_msg from history on app rerun
-	for message in st.session_state.msg:
-		with st.chat_message(message["role"]):
-			st.markdown(message["content"])
-
-	# React to user input
-	if prompt := st.chat_input("What's up?"):
-		# Display user message in chat message container
-		reply = chat_completion(prompt)
-		st.chat_message("user").markdown(prompt)
-		# Add user message to chat history
-		st.session_state.msg.append({"role": "user", "content": prompt})
-		# Display assistant response in chat message container
-		with st.chat_message("assistant"):
-			st.markdown(reply)
-		# Add assistant response to chat history
-		st.session_state.msg.append({"role": "assistant", "content": reply})
-
-
-#Exercise 9 : Using the OpenAI API
-#Modify exercise 9 - include streaming option
-def chat_completion_stream(prompt):
-	openai.api_key = st.secrets["openapi_key"]
-	MODEL = "gpt-3.5-turbo"
-	response = openai.ChatCompletion.create(
-		model=MODEL,
-		messages=[
-			{"role": "system", "content": "You are a helpful assistant"},
-			{"role": "user", "content": prompt},
-		],
-		temperature= 0, # temperature
-		stream=True #stream option
-	)
-	return response
-
-#integration API call into streamlit chat components
-def ex9_basebot():
-
-	#Initialize chat history
-	if "chat_msg" not in st.session_state:
-		st.session_state.chat_msg = []
-
-	#Showing Chat history
-	for message in st.session_state.chat_msg:
-		with st.chat_message(message["role"]):
-			st.markdown(message["content"])
-	try:
-		#
-		if prompt := st.chat_input("What is up?"):
-			#set user prompt in chat history
-			st.session_state.chat_msg.append({"role": "user", "content": prompt})
-			with st.chat_message("user"):
-				st.markdown(prompt)
-
-			with st.chat_message("assistant"):
-				message_placeholder = st.empty()
-				full_response = ""
-				#streaming function
-				for response in chat_completion_stream(prompt):
-					full_response += response.choices[0].delta.get("content", "")
-					message_placeholder.markdown(full_response + "▌")
-				message_placeholder.markdown(full_response)
-			st.session_state.chat_msg.append({"role": "assistant", "content": full_response})
-
-	except Exception as e:
-		st.error(e)
-
-#create a prompt_template session state
-#Exercise 10: Basic prompt engineering
-def ex10():
-	#Step 1 set a new prompt_template session state in def main() 
-	#step 2 set it in your message system content
-	st.title("Api Call")
-	openai.api_key = st.secrets["openapi_key"]
-	MODEL = "gpt-3.5-turbo"
-	response = openai.ChatCompletion.create(
-		model=MODEL,
-		messages=[
-			{"role": "system", "content": st.session_state.prompt_template },
-			{"role": "user", "content": "Tell me about Singapore in the 1970s in 50 words"},
-		],
-		temperature=0,
-	)
-	st.markdown("**LLM Response:**")
-	st.write(response["choices"][0]["message"]["content"].strip())
-	st.markdown("**Total tokens:**")
-	st.write(str(response["usage"]["total_tokens"]))
-
-#Challenge 10
-#mod chat complete stream function and replace system content to session_state prompt template
-def chat_completion_stream_prompt(prompt):
-	openai.api_key = st.secrets["openapi_key"]
-	MODEL = "gpt-3.5-turbo" #consider changing this to session_state
-	response = openai.ChatCompletion.create(
-		model=MODEL,
-		messages=[
-			{"role": "system", "content": st.session_state.prompt_template},
-			{"role": "user", "content": prompt},
-		],
-		temperature= 0, # temperature
-		stream=True #stream option
-	)
-	return response
-
-
-def ch10_basebot():
-  #call the function in your base bot
-	#Initialize chat history
-	if "msg" not in st.session_state:
-		st.session_state.msg = []
-
-	#Showing Chat history
-	for message in st.session_state.msg:
-		with st.chat_message(message["role"]):
-			st.markdown(message["content"])
-	try:
-		#
-		if prompt := st.chat_input("What is up?"):
-			#set user prompt in chat history
-			st.session_state.msg.append({"role": "user", "content": prompt})
-			with st.chat_message("user"):
-				st.markdown(prompt)
-
-			with st.chat_message("assistant"):
-				message_placeholder = st.empty()
-				full_response = ""
-				#streaming function
-				for response in chat_completion_stream_prompt(prompt):
-					full_response += response.choices[0].delta.get("content", "")
-					message_placeholder.markdown(full_response + "▌")
-				message_placeholder.markdown(full_response)
-			st.session_state.msg.append({"role": "assistant", "content": full_response})
-
-	except Exception as e:
-		st.error(e)
-
-def ex11():
-	#langchain prompt template
-
-	fstring_template = """Tell me a {adjective} story about {content}"""
-	prompt = PromptTemplate.from_template(fstring_template)
-	final_prompt = prompt.format(adjective="funny", content="chickens")
-	st.write(final_prompt)
-	pass
-
-def ch11():
-	#put in basebot
-	fstring_template = """Tell me a {adjective} story about {content}"""
-	prompt = PromptTemplate.from_template(fstring_template)
-	final_prompt = prompt.format(adjective="funny", content="chickens")
-	st.write(final_prompt)
-	#set session_state.prompt_template = final_prompt
-	st.session_state.prompt_template = prompt.format(adjective="funny", content="chickens")
-	#call ch10_basebot
-	ch10_basebot()
-
-def ex12():
-	memory = ConversationBufferWindowMemory(k=1)
-	memory.save_context({"input": "hi"}, {"output": "whats up"})
-	memory.save_context({"input": "not much you"}, {"output": "not much"})
-
-	st.write(memory.load_memory_variables({}))
-   
-
-	memory = ConversationBufferWindowMemory( k=1, return_messages=True)
-	memory.save_context({"input": "hi"}, {"output": "whats up"})
-	memory.save_context({"input": "not much you"}, {"output": "not much"})
-
-	st.write(memory.load_memory_variables({}))
-	pass
-
-def ch12():
-	if "memory" not in st.session_state:
-		st.session_state.memory = ConversationBufferWindowMemory(k=5)
-
-	#step 1 save the memory from your chatbot 
-	#step 2 integrate the memory in the prompt_template (st.session_state.prompt_template) show a hint
-	memory_data = st.session_state.memory.load_memory_variables({})
-	st.write(memory_data)
-	st.session_state.prompt_template = f"""You are a helpful assistant
-										This is the last conversation history
-										{memory_data}
-										"""
-	 #call the function in your base bot
-	#Initialize chat history
-	if "msg" not in st.session_state:
-		st.session_state.msg = []
-
-	#Showing Chat history
-	for message in st.session_state.msg:
-		with st.chat_message(message["role"]):
-			st.markdown(message["content"])
-	try:
-		#
-		if prompt := st.chat_input("What is up?"):
-			#set user prompt in chat history
-			st.session_state.msg.append({"role": "user", "content": prompt})
-			with st.chat_message("user"):
-				st.markdown(prompt)
-
-			with st.chat_message("assistant"):
-				message_placeholder = st.empty()
-				full_response = ""
-				#streaming function
-				for response in chat_completion_stream_prompt(prompt):
-					full_response += response.choices[0].delta.get("content", "")
-					message_placeholder.markdown(full_response + "▌")
-				message_placeholder.markdown(full_response)
-			st.session_state.msg.append({"role": "assistant", "content": full_response})
-			st.session_state.memory.save_context({"input": prompt}, {"output": full_response})
-
-	except Exception as e:
-		st.error(e)
-	pass
-
-#exercise 13 - loading
-#pip install pypdf
-#pip install lancedb
-def upload_file_streamlit():
-
-	def get_file_extension(file_name):
-		return os.path.splitext(file_name)[1]
-
-	st.subheader("Upload your docs")
-
-	# Streamlit file uploader to accept file input
-	uploaded_file = st.file_uploader("Choose a file", type=['docx', 'txt', 'pdf'])
-
-	if uploaded_file:
-
-		# Reading file content
-		file_content = uploaded_file.read()
-
-		# Determine the suffix based on uploaded file's name
-		file_suffix = get_file_extension(uploaded_file.name)
-
-		# Saving the uploaded file temporarily to process it
-		with tempfile.NamedTemporaryFile(delete=False, suffix=file_suffix) as temp_file:
-			temp_file.write(file_content)
-			temp_file.flush()  # Ensure the data is written to the file
-			temp_file_path = temp_file.name
-		return temp_file_path
-	
-#exercise 13 - split and chunk, embeddings and storing in vectorstores for reference
-def vecstore_creator(query):
-	if "vectorstore" not in st.session_state:
-		st.session_state.vectorstore = False
-	
-	os.environ['OPENAI_API_KEY'] = st.secrets["openapi_key"]
-	# Process the temporary file using UnstructuredFileLoader (or any other method you need)
-	embeddings = OpenAIEmbeddings()
-	db = lancedb.connect("/tmp/lancedb")
-	table = db.create_table(
-		"my_table",
-		data=[
-			{
-				"vector": embeddings.embed_query("Hello World"),
-				"text": "Hello World",
-				"id": "1",
-			}
-		],
-		mode="overwrite",
-	)
-	#st.write(temp_file_path)
-	temp_file_path = upload_file_streamlit()
-	if temp_file_path:
-		loader = PyPDFLoader(temp_file_path )
-		documents = loader.load_and_split()
-		vectorestore = LanceDB.from_documents(documents, OpenAIEmbeddings(), connection=table)
-		st.session_state.vectorstore = vectorestore
-		if query:
-			docs = vectorestore.similarity_search(query)
-			st.write(docs[0].page_content)
-
-def ex13_vectorstore_creator():
-	query = st.text_input("Enter a query")
-	vecstore_creator(query)
-
-#save the vectorstore in st.session_state
-#add semantic search prompt into memory prompt
-#integrate back into your chatbot
-def ex14():
-
-	vecstore_creator(False)
-	
-	if "memory" not in st.session_state:
-		st.session_state.memory = ConversationBufferWindowMemory(k=5)
-
-	#step 1 save the memory from your chatbot 
-	#step 2 integrate the memory in the prompt_template (st.session_state.prompt_template) show a hint
-	memory_data = st.session_state.memory.load_memory_variables({})
-	st.write(memory_data)
-	st.session_state.prompt_template = f"""You are a helpful assistant
-										This is the last conversation history
-										{memory_data}
-										"""
-	 #call the function in your base bot
-	#Initialize chat history
-	if "msg" not in st.session_state:
-		st.session_state.msg = []
-
-	#Showing Chat history
-	for message in st.session_state.msg:
-		with st.chat_message(message["role"]):
-			st.markdown(message["content"])
-	try:
-		#
-		if prompt := st.chat_input("What is up?"):
-			#query information
-			if st.session_state.vectorstore:
-				docs = st.session_state.vectorstore.similarity_search(prompt)
-				docs = docs[0].page_content 
-				#add your query prompt
-				vs_prompt = f"""You should reference this search result to help your answer,
-								{docs}
-								if the search result does not anwer the query, please say you are unable to answer, do not make up an answer"""
-			else:
-				vs_prompt = ""
-			#add query prompt to your memory prompt and send it to LLM
-			st.session_state.prompt_template = st.session_state.prompt_template + vs_prompt
-			#set user prompt in chat history
-			st.session_state.msg.append({"role": "user", "content": prompt})
-			with st.chat_message("user"):
-				st.markdown(prompt)
-
-			with st.chat_message("assistant"):
-				message_placeholder = st.empty()
-				full_response = ""
-				#streaming function
-				for response in chat_completion_stream_prompt(prompt):
-					full_response += response.choices[0].delta.get("content", "")
-					message_placeholder.markdown(full_response + "▌")
-				message_placeholder.markdown(full_response)
-			st.session_state.msg.append({"role": "assistant", "content": full_response})
-			st.session_state.memory.save_context({"input": prompt}, {"output": full_response})
-
-	except Exception as e:
-		st.error(e)
-
-#collecting data using sql server
-def ex15():
-	# Create or check for the 'database' directory in the current working directory
-	cwd = os.getcwd()
-	database_path = os.path.join(cwd, "database")
-
-	if not os.path.exists(database_path):
-		os.makedirs(database_path)
-
-	# Set DB_NAME to be within the 'database' directory
-	DB_NAME = os.path.join(database_path, "default_db")
-
-	# Connect to the SQLite database
-	conn = sqlite3.connect(DB_NAME)
-	cursor = conn.cursor()
-
-	# Conversation data table
-	cursor.execute('''
-		CREATE TABLE IF NOT EXISTS data_table (
-			id INTEGER PRIMARY KEY,
-			date TEXT NOT NULL UNIQUE,
-			username TEXT NOT NULL,
-			chatbot_ans TEXT NOT NULL,
-			user_prompt TEXT NOT NULL,
-			tokens TEXT
-		)
-	''')
-	conn.commit()
-	conn.close()
-
-#implementing data collection and displaying 
-def ex15_display():
-#display data
-	cwd = os.getcwd()
-	database_path = os.path.join(cwd, "database")
-
-	if not os.path.exists(database_path):
-		os.makedirs(database_path)
-
-	# Set DB_NAME to be within the 'database' directory
-	DB_NAME = os.path.join(database_path, "default_db")
-	# Connect to the specified database
-	conn = sqlite3.connect(DB_NAME)
-	cursor = conn.cursor()
-
-	# Fetch all data from data_table
-	cursor.execute("SELECT * FROM data_table")
-	rows = cursor.fetchall()
-	column_names = [description[0] for description in cursor.description]
-	df = pd.DataFrame(rows, columns=column_names)
-	st.dataframe(df)
-	conn.close()
-
-def ex15_collect(username, chatbot, prompt):
-#collect data from bot
-	cwd = os.getcwd()
-	database_path = os.path.join(cwd, "database")
-
-	if not os.path.exists(database_path):
-		os.makedirs(database_path)
-
-	# Set DB_NAME to be within the 'database' directory
-	DB_NAME = os.path.join(database_path, "default_db")
-	conn = sqlite3.connect("database")
-	cursor = conn.cursor()
-	now = datetime.now() # Using ISO format for date
-	tokens = len(chatbot)*1.3
-	cursor.execute('''
-		INSERT INTO data_table (date, username,chatbot_ans, user_prompt, tokens)
-		VALUES (?, ?, ?, ?, ?, ?)
-	''', (now, username, chatbot, prompt, tokens))
-	conn.commit()
-	conn.close()
-
-def ch15_chatbot():
-	vecstore_creator(False)
-	ex15_display()
-	if "memory" not in st.session_state:
-		st.session_state.memory = ConversationBufferWindowMemory(k=5)
-
-	#step 1 save the memory from your chatbot 
-	#step 2 integrate the memory in the prompt_template (st.session_state.prompt_template) show a hint
-	memory_data = st.session_state.memory.load_memory_variables({})
-	st.write(memory_data)
-	st.session_state.prompt_template = f"""You are a helpful assistant
-										This is the last conversation history
-										{memory_data}
-										"""
-	 #call the function in your base bot
-	#Initialize chat history
-	if "msg" not in st.session_state:
-		st.session_state.msg = []
-
-	#Showing Chat history
-	for message in st.session_state.msg:
-		with st.chat_message(message["role"]):
-			st.markdown(message["content"])
-	try:
-		#
-		if prompt := st.chat_input("What is up?"):
-			#query information
-			if st.session_state.vectorstore:
-				docs = st.session_state.vectorstore.similarity_search(prompt)
-				docs = docs[0].page_content
-				#add your query prompt
-				vs_prompt = f"""You should reference this search result to help your answer,
-								{docs}
-								if the search result does not anwer the query, please say you are unable to answer, do not make up an answer"""
-			else:
-				vs_prompt = ""
-			#add query prompt to your memory prompt and send it to LLM
-			st.session_state.prompt_template = st.session_state.prompt_template + vs_prompt
-			#set user prompt in chat history
-			st.session_state.msg.append({"role": "user", "content": prompt})
-			with st.chat_message("user"):
-				st.markdown(prompt)
-
-			with st.chat_message("assistant"):
-				message_placeholder = st.empty()
-				full_response = ""
-				#streaming function
-				for response in chat_completion_stream_prompt(prompt):
-					full_response += response.choices[0].delta.get("content", "")
-					message_placeholder.markdown(full_response + "▌")
-				message_placeholder.markdown(full_response)
-			st.session_state.msg.append({"role": "assistant", "content": full_response})
-			st.session_state.memory.save_context({"input": prompt}, {"output": full_response})
-			#collect data
-			ex15_collect("username", full_response, prompt)
-
-	except Exception as e:
-		st.error(e)
-
-#smart agents accessing the internet for free
-#https://github.com/langchain-ai/streamlit-agent/blob/main/streamlit_agent/search_and_chat.py
-def ex16():
-	st.title("🦜 LangChain: Chat with search")
-
-	openai_api_key = st.secrets["openapi_key"]
-
-	msgs = StreamlitChatMessageHistory()
-	memory = ConversationBufferMemory(
-		chat_memory=msgs, return_messages=True, memory_key="chat_history", output_key="output"
-	)
-	if len(msgs.messages) == 0 or st.sidebar.button("Reset chat history"):
-		msgs.clear()
-		msgs.add_ai_message("How can I help you?")
-		st.session_state.steps = {}
-
-	avatars = {"human": "user", "ai": "assistant"}
-	for idx, msg in enumerate(msgs.messages):
-		with st.chat_message(avatars[msg.type]):
-			# Render intermediate steps if any were saved
-			for step in st.session_state.steps.get(str(idx), []):
-				if step[0].tool == "_Exception":
-					continue
-				with st.status(f"**{step[0].tool}**: {step[0].tool_input}", state="complete"):
-					st.write(step[0].log)
-					st.write(step[1])
-			st.write(msg.content)
-
-	if prompt := st.chat_input(placeholder="Enter a query on the Internet"):
-		st.chat_message("user").write(prompt)
-
-		llm = ChatOpenAI(model_name="gpt-3.5-turbo", openai_api_key=openai_api_key, streaming=True)
-		tools = [DuckDuckGoSearchRun(name="Search")]
-		chat_agent = ConversationalChatAgent.from_llm_and_tools(llm=llm, tools=tools)
-		executor = AgentExecutor.from_agent_and_tools(
-			agent=chat_agent,
-			tools=tools,
-			memory=memory,
-			return_intermediate_steps=True,
-			handle_parsing_errors=True,
-		)
-		with st.chat_message("assistant"):
-			st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
-			response = executor(prompt, callbacks=[st_cb])
-			st.write(response["output"])
-			st.session_state.steps[str(len(msgs.messages) - 1)] = response["intermediate_steps"]
-
-#agents ,vectorstores, wiki 
-#https://python.langchain.com/docs/modules/agents/how_to/custom_agent_with_tool_retrieval
-#note tool
-@tool("Document search")
-def document_search(query: str) ->str:
-	"Use this function first to search for documents pertaining to the query before going into the internet"
-	docs = st.session_state.vectorstore.similarity_search(query)
-	docs = docs[0].page_content
-	json_string = json.dumps(docs, ensure_ascii=False, indent=4)
-	return json_string
-
-def ex17():
-	vecstore_creator(False)
-	#st.session_state.vectorstore
-
-	st.title("🦜 LangChain: Chat with search")
-
-	openai_api_key = st.secrets["openapi_key"]
-
-	msgs = StreamlitChatMessageHistory()
-	memory = ConversationBufferMemory(
-		chat_memory=msgs, return_messages=True, memory_key="chat_history", output_key="output"
-	)
-	if len(msgs.messages) == 0 or st.sidebar.button("Reset chat history"):
-		msgs.clear()
-		msgs.add_ai_message("How can I help you?")
-		st.session_state.steps = {}
-
-	avatars = {"human": "user", "ai": "assistant"}
-	for idx, msg in enumerate(msgs.messages):
-		with st.chat_message(avatars[msg.type]):
-			# Render intermediate steps if any were saved
-			for step in st.session_state.steps.get(str(idx), []):
-				if step[0].tool == "_Exception":
-					continue
-				with st.status(f"**{step[0].tool}**: {step[0].tool_input}", state="complete"):
-					st.write(step[0].log)
-					st.write(step[1])
-			st.write(msg.content)
-
-	if prompt := st.chat_input(placeholder="Enter a query on the Internet"):
-		st.chat_message("user").write(prompt)
-
-		llm = ChatOpenAI(model_name="gpt-3.5-turbo", openai_api_key=openai_api_key, streaming=True)
-		tools = [DuckDuckGoSearchRun(name="Internet Search"), document_search]
-		chat_agent = ConversationalChatAgent.from_llm_and_tools(llm=llm, tools=tools)
-		executor = AgentExecutor.from_agent_and_tools(
-			agent=chat_agent,
-			tools=tools,
-			memory=memory,
-			return_intermediate_steps=True,
-			handle_parsing_errors=True,
-		)
-		with st.chat_message("assistant"):
-			st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
-			response = executor(prompt, callbacks=[st_cb])
-			st.write(response["output"])
-			st.session_state.steps[str(len(msgs.messages) - 1)] = response["intermediate_steps"]
-
-#Pandai - A smart agent that can do visual analytics
-def ex18():
-	st.title("pandas-ai streamlit interface")
-
-	# Upload CSV file using st.file_uploader
-	uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
-	if "openai_key" not in st.session_state:
-		st.session_state.openai_key = st.secrets["openapi_key"]
-		st.session_state.prompt_history = []
-		st.session_state.df = None
-	
-	if st.session_state.df is None:
-		# If a file is uploaded, read it with pandas and display the DataFrame
-		if uploaded_file is not None:
-			try:
-				df = pd.read_csv(uploaded_file)
-				st.session_state.df = df
-			except Exception as e:
-				st.write("There was an error processing the CSV file.")
-				st.write(e)
-
-	# Check if df is a DataFrame instance
-	if  st.session_state.df is None:
-		st.session_state.df = pd.DataFrame({
-			"country": ["United States", "United Kingdom", "France", "Germany", "Italy", "Spain", "Canada", "Australia", "Japan", "China"],
-			"gdp": [19294482071552, 2891615567872, 2411255037952, 3435817336832, 1745433788416, 1181205135360, 1607402389504, 1490967855104, 4380756541440, 14631844184064],
-			"happiness_index": [6.94, 7.16, 6.66, 7.07, 6.38, 6.4, 7.23, 7.22, 5.87, 5.12]
-		})
-	
-	with st.form("Question"):
-		question = st.text_input("Question", value="", type="default")
-		submitted = st.form_submit_button("Submit")
-		if submitted:
-			with st.spinner():
-				llm = OpenAI(api_token=st.session_state.openai_key)
-				df = SmartDataframe(st.session_state.df, config={"llm": llm})
-				response = df.chat(question)  # Using 'chat' method based on your context.
-            
-				# After generating the chart (if applicable), display it:
-				chart_path = os.path.join("exports/charts", "temp_chart.png")
-				if os.path.exists(chart_path):
-					plt.savefig(chart_path)
-					st.image(chart_path, caption="Generated Chart", use_column_width=True)
-				
-				# Display the textual response (if any):
-				if response:
-					st.write(response)
-				
-				# Append the question to the history:
-				st.session_state.prompt_history.append(question)
-
-	if st.session_state.df is not None:
-		st.subheader("Current dataframe:")
-		st.write(st.session_state.df)
-
-	st.subheader("Prompt history:")
-	st.write(st.session_state.prompt_history)
-
-	if st.button("Clear"):
-		st.session_state.prompt_history = []
-		st.session_state.df = None
-
-
+from org_module import (
+	has_at_least_two_rows,
+	initialise_admin_account,
+	load_user_profile,
+	display_accounts,
+	create_org_structure,
+	check_multiple_schools,
+	process_user_profile,
+	remove_or_reassign_teacher_ui,
+	reassign_student_ui,
+	change_teacher_profile_ui
+)
+from pwd_module import reset_passwords, password_settings
+from users_module import (
+	link_users_to_app_function_ui,
+	set_function_access_for_user,
+	create_prompt_template,
+	update_prompt_template,
+	vectorstore_selection_interface,
+	pre_load_variables,
+	load_and_fetch_vectorstore_for_user,
+	link_profiles_to_vectorstore_interface
+)
+from k_map import (
+	map_prompter, 
+	generate_mindmap,
+	map_creation_form, 
+	map_prompter_with_plantuml_form, 
+	generate_plantuml_mindmap, 
+	render_diagram,
+	output_mermaid_diagram
+)
+from audio import record_myself,assessment_prompt
+from bot_settings import bot_settings_interface, load_bot_settings
+from PIL import Image
+import configparser
+import ast
+from machine import upload_csv, plot_prices, prepare_data_and_train, plot_predictions, load_teachable_machines
+from chatbot import call_api
+from agent import agent_bot, agent_management
+from prototype_application import my_first_app, prototype_settings
+
+class ConfigHandler:
+	def __init__(self):
+		self.config = configparser.ConfigParser()
+		self.config.read('config.ini')
+
+	def get_value(self, section, key):
+		value = self.config.get(section, key)
+		try:
+			# Convert string value to a Python data structure
+			return ast.literal_eval(value)
+		except (SyntaxError, ValueError):
+			# If not a data structure, return the plain string
+			return value
+
+# Initialization
+config_handler = ConfigHandler()
+
+# Setting Streamlit configurations
+st.set_page_config(layout="wide")
+
+# Fetching secrets from Streamlit
+DEFAULT_TITLE = st.secrets["default_title"]
+SUPER_PWD = st.secrets["super_admin_password"]
+SUPER = st.secrets["super_admin"]
+DEFAULT_DB = st.secrets["default_db"]
+
+# Fetching values from config.ini
+DEFAULT_TEXT = config_handler.get_value('constants', 'DEFAULT_TEXT')
+TCH = config_handler.get_value('constants', 'TCH')
+STU = config_handler.get_value('constants', 'STU')
+SA = config_handler.get_value('constants', 'SA')
+AD = config_handler.get_value('constants', 'AD')
+COTF = config_handler.get_value('constants', 'COTF')
+META = config_handler.get_value('constants', 'META')
+PANDAI = config_handler.get_value('constants', 'PANDAI')
+MENU_FUNCS = config_handler.get_value('menu_lists', 'MENU_FUNCS')
+META_BOT = config_handler.get_value('constants', 'META_BOT')
+QA_BOT = config_handler.get_value('constants', 'QA_BOT')
+LESSON_BOT = config_handler.get_value('constants', 'LESSON_BOT')
+LESSON_COLLAB = config_handler.get_value('constants', 'LESSON_COLLAB')
+LESSON_COMMENT = config_handler.get_value('constants', 'LESSON_COMMENT')
+LESSON_MAP = config_handler.get_value('constants', 'LESSON_MAP')
+REFLECTIVE = config_handler.get_value('constants', 'REFLECTIVE')
+CONVERSATION = config_handler.get_value('constants', 'CONVERSATION')
+MINDMAP = config_handler.get_value('constants', 'MINDMAP')
+METACOG = config_handler.get_value('constants', 'METACOG')
+PROTOTYPE = config_handler.get_value('constants', 'PROTOTYPE')
+
+
+def is_function_disabled(function_name):
+	return st.session_state.func_options.get(function_name, True)
+
+
+def initialize_session_state( menu_funcs, default_value):
+	st.session_state.func_options = {key: default_value for key in menu_funcs.keys()}
 	
 
-
-#Exercise 2b : creating st.sidebar
 def main():
+	try:
+		if "title_page"	not in st.session_state:
+			st.session_state.title_page = DEFAULT_TITLE 
 
-	#ex4b
-	if "session_data" not in st.session_state:
-		st.session_state.session_data = ["alpha", "omega"]
-	#challenge 4b
-	if "age" not in st.session_state:
-		st.session_state.age = 0
-	
-	if "name" not in st.session_state:
-		st.session_state.name = ""
-	
-	if "gender" not in st.session_state:
-		st.session_state.gender = ""
-	#ex10
-	if "prompt_template" not in st.session_state:
-		st.session_state.prompt_template = "Speak like Yoda from Star Wars for every question that was asked, do not give a direct answer but ask more questions in the style of wise Yoda from Star Wars"
-#Exercise 2b:
-	# with st.sidebar:
-	# 	st.write("Side bar test")
-	
-	# ex1()
-	# ex2()
-	# ch2()
-	# ex3()
+		st.title(st.session_state.title_page)
+		sac.divider(label='ITD Workshop Framework', icon='house', align='center', direction='horizontal', dashed=False, bold=False)
+		
+		if "api_key" not in st.session_state:
+			st.session_state.api_key = ""
 
-#Challenge 3
-	with st.sidebar:
-		option = st.selectbox("Function exercises", ["ex1", "ex2", "ch2", "ex3", "ch3", "ex4a", "ex4b", "ch4", "ex5", "ex6", "ch6", "ex8", "ch8", "ex9", "ex10", "ch10", "ex11", "ch11", "ex12", "ch12", "ex13", "ex14", "ex15", "ch15", "ex16", "ex17", "ex18"])
-	if option == "ex1":
-		ex1()
-	elif option == "ex2":
-		ex2()
-	elif option == "ch2":
-		ch2()
-	elif option == "ex3":
-		ex3()
-#end of challenge 3
-	elif option == "ex4a":
-		ex4a()
-	elif option == "ex4b":
-		ex4b()
-	elif option == "ch4":
-		ch4()
-	elif option == "ex5":
-		ex5()
-	elif option == "ex6":
-		ex6()
-	elif option == "ch6":
-		ch6()
-	elif option == "ex8":
-		ex8()
-	elif option == "ch8":
-		ch8()
-	elif option == "ex9":
-		ex9_basebot()
-	elif option == "ex10":
-		ex10()
-	elif option == "ch10":
-		ch10_basebot()
-	elif option == "ex11":
-		ex11()
-	elif option == "ch11":
-		ch11()
-	elif option == "ex12":
-		ex12()
-	elif option == "ch12":
-		ch12()
-	elif option == "ex13":
-		ex13_vectorstore_creator()
-	elif option == "ex14":
-		ex14()
-	elif option == "ex15":
-		ex15()
-	elif option == "ch15":
-		ch15_chatbot()
-	elif option == "ex16":
-		ex16()
-	elif option == "ex17":
-		ex17()
-	elif option == "ex18":
-		ex18()
+		if "option" not in st.session_state:
+			st.session_state.option = False
+		
+		if "login" not in st.session_state:
+			st.session_state.login = False
+		
+		if "user" not in st.session_state:
+			st.session_state.user = None
+		
+		if "openai_model" not in st.session_state:
+			st.session_state.openai_model = st.secrets["default_model"]
+
+		if "msg" not in st.session_state:
+			st.session_state.msg = []
+
+		if "rating" not in st.session_state:
+			st.session_state.rating = False
+
+		if "temp" not in st.session_state:
+			st.session_state.temp = st.secrets["default_temp"]
+		
+		if "frequency_penalty" not in st.session_state:
+			st.session_state.frequency_penalty = st.secrets["default_frequency_penalty"]
+
+		if "presence_penalty" not in st.session_state:
+			st.session_state.presence_penalty = st.secrets["default_presence_penalty"]
+		
+		if "memoryless" not in st.session_state:
+			st.session_state.memoryless = False
+		
+		if "k_memory" not in st.session_state:
+			st.session_state.k_memory = 4
+
+		if "vs" not in st.session_state:
+			st.session_state.vs = False
+		
+		if "visuals" not in st.session_state:
+			st.session_state.visuals = False
+		
+		if "svg_height" not in st.session_state:
+			st.session_state["svg_height"] = 1000
+
+		if "previous_mermaid" not in st.session_state:
+			st.session_state["previous_mermaid"] = ""
+			
+		if "current_model" not in st.session_state:
+			st.session_state.current_model = "No KB loaded"
+
+		if "func_options" not in st.session_state:
+			st.session_state.func_options = {}
+			initialize_session_state(MENU_FUNCS, True)
+
+		if "tools" not in st.session_state:
+			st.session_state.tools = []
+		
+		
+		create_dbs()
+		initialise_admin_account()
+		with st.sidebar: #options for sidebar
+
+			if st.session_state.login == False:
+				image = Image.open('AI logo.png')
+				st.image(image)
+				st.session_state.option = menu([MenuItem('Users login', icon='people'), MenuItem('Application Info', icon='info-circle')])
+			else:
+				#can do a test if user is school is something show a different logo and set a different API key
+				
+				if st.session_state.user['profile_id'] == SA: #super admin login feature
+					# Initialize the session state for function options
+					initialize_session_state(MENU_FUNCS, False)
+		
+				else:
+					
+					set_function_access_for_user(st.session_state.user['id'])
+					
+				
+					# Using the is_function_disabled function for setting the `disabled` attribute
+				
+				st.session_state.option = sac.menu([
+					sac.MenuItem('Home', icon='house', children=[
+						sac.MenuItem('Personal Dashboard', icon='person-circle', disabled=is_function_disabled('Personal Dashboard')),
+						sac.MenuItem('Prototype Application', icon='star-fill', disabled=is_function_disabled('Prototype Application')),
+						sac.MenuItem('Prototype Settings', icon='wrench', disabled=is_function_disabled('Prototype Settings')),
+					]),
+		
+					sac.MenuItem('Basics of Machine Learning', icon='robot', children=[
+						sac.MenuItem('Machine Learning', icon='clipboard-data', disabled=is_function_disabled('Machine Learning')),
+						sac.MenuItem('Deep Learning', icon='clipboard-data', disabled=is_function_disabled('Deep Learning')),
+					]),
+					sac.MenuItem('Types of Chatbot', icon='book', children=[
+						sac.MenuItem('Rule Based Chatbot', icon='chat-square-dots', disabled=is_function_disabled('Rule Based Chatbot')),
+						sac.MenuItem('Open AI API Call', icon='chat-square-dots', disabled=is_function_disabled('Open AI API Call')),
+						sac.MenuItem('AI Chatbot', icon='chat-square-dots', disabled=is_function_disabled('AI Chatbot')),
+						sac.MenuItem('Chatbot Management', icon='wrench', disabled=is_function_disabled('AI Chatbot')),
+						sac.MenuItem('Agent Chatbot', icon='chat-square-dots', disabled=is_function_disabled('Agent Chatbot')),
+						sac.MenuItem('Agent Management', icon='wrench', disabled=is_function_disabled('Agent Management')),
+						sac.MenuItem('Data Management', icon='database-fill-up',disabled=is_function_disabled('Data Management')),
+					]),
+					sac.MenuItem('Knowledge Base Tools', icon='book', children=[
+						sac.MenuItem('Files Management', icon='file-arrow-up', disabled=is_function_disabled('Files management')),
+						sac.MenuItem('Knowledge Base Editor', icon='database-fill-up',disabled=is_function_disabled('KB management')),
+					]),
+					sac.MenuItem('GenAI Application', icon='book', children=[
+						sac.MenuItem('AI Analytics', icon='chat-square-dots', disabled=is_function_disabled('AI Analytics')),
+						sac.MenuItem('Audio Analytics', icon='file-arrow-up', disabled=is_function_disabled('Audio Analytics')),
+						sac.MenuItem('Knowledge Map Generator', icon='database-fill-up',disabled=is_function_disabled('Knowledge Map Generator')),
+					]),
+					sac.MenuItem('Organisation Tools', icon='buildings', children=[
+						sac.MenuItem('Org Management', icon='building-gear', disabled=is_function_disabled('Organisation Management')),
+						sac.MenuItem('Users Management', icon='house-gear', disabled=is_function_disabled('School Users Management')),
+					]),
+					sac.MenuItem(type='divider'),
+					sac.MenuItem('Profile Settings', icon='gear'),
+					sac.MenuItem('Application Info', icon='info-circle'),
+					sac.MenuItem('Logout', icon='box-arrow-right'),
+				], index=1, format_func='title', open_all=False)
+
+		if st.session_state.option == 'Users login':
+				col1, col2 = st.columns([3,4])
+				placeholder2 = st.empty()
+				with placeholder2:
+					with col1:
+						if login_function() == True:
+							placeholder2.empty()
+							st.session_state.login = True
+							st.session_state.user = load_user_profile(st.session_state.user)
+							pre_load_variables(st.session_state.user['id'])
+							load_and_fetch_vectorstore_for_user(st.session_state.user['id'])
+							load_bot_settings(st.session_state.user['id'])
+							st.rerun()
+					with col2:
+						pass
+		
+		#Personal Dashboard
+		elif st.session_state.option == 'Personal Dashboard':
+			st.subheader(f":green[{st.session_state.option}]")
+			if st.session_state.user['profile_id'] == SA:
+				sch_id, msg = process_user_profile(st.session_state.user["profile_id"])
+				st.write(msg)
+				download_data_table_csv(st.session_state.user["id"], sch_id, st.session_state.user["profile_id"])
+			else:
+				download_data_table_csv(st.session_state.user["id"], st.session_state.user["school_id"], st.session_state.user["profile_id"])
+			display_vectorstores()
+			vectorstore_selection_interface(st.session_state.user['id'])
+		
+		elif st.session_state.option == 'Prototype Application':
+			my_first_app(PROTOTYPE)
+			pass
+		elif st.session_state.option == 'Prototype Settings':
+			prototype_settings()
+			pass
+
+		elif st.session_state.option == 'Machine Learning':
+			
+			st.subheader(f":green[{st.session_state.option}]")
+			df = upload_csv()
+			if df is not None:
+				plot_prices(df)
+				if st.checkbox('Start Predictive Model'):
+					df_predict, tree, lr, column_name, future_days, X, Sucess =  prepare_data_and_train(df)
+					if Sucess:
+						plot_predictions(df_predict, tree, lr, column_name, future_days, X)
+					else:
+						st.warning("Please fill in all the fields in the machine learning form")
+		
+		elif st.session_state.option == 'Deep Learning':
+			st.subheader(f":green[{st.session_state.option}]")
+			load_teachable_machines()
+		elif st.session_state.option == 'Rule Based Chatbot':
+			pass
+		elif st.session_state.option == 'Open AI API Call':
+			st.subheader(f":green[{st.session_state.option}]")
+			call_api()
+		elif st.session_state.option == 'AI Analytics':
+			st.subheader(f":green[{st.session_state.option}]")
+			pandas_ai(st.session_state.user['id'], st.session_state.user['school_id'], st.session_state.user['profile_id'])
+			pass
+		elif st.session_state.option == 'Agent Chatbot':
+			if st.session_state.tools == []:
+				st.warning("Please set your tool under Agent Management")
+			else:
+				if st.session_state.memoryless:
+					agent_bot()
+		elif st.session_state.option == 'Agent Management':
+			agent_management()
+
+		elif st.session_state.option == "AI Chatbot":
+			st.subheader(f":green[{st.session_state.option}]")
+			sac.divider(label='Chatbot Settings', icon='robot', align='center', direction='horizontal', dashed=False, bold=False)
+			#check if API key is entered
+			with st.expander("Chatbot Settings"):
+				vectorstore_selection_interface(st.session_state.user['id'])
+				if st.session_state.vs:#chatbot with knowledge base
+					raw_search = sac.switch(label='Raw Search', value=False, align='start', position='left')
+				clear = sac.switch(label='Clear Chat', value=False, align='start', position='left')
+				if clear == True:	
+					clear_session_states()
+				mem = sac.switch(label='Enable Memory', value=True, align='start', position='left')
+				if mem == True:	
+					st.session_state.memoryless = False
+				else:
+					st.session_state.memoryless = True
+				rating = sac.switch(label='Rate Response', value=True, align='start', position='left')
+				if rating == True:	
+					st.session_state.rating = True
+				else:
+					st.session_state.rating = False
+			if st.session_state.vs:#chatbot with knowledge base
+				if raw_search == True:
+					search_bot()
+				else:
+					if st.session_state.memoryless: #memoryless chatbot with knowledge base but no memory
+						basebot_qa(QA_BOT)
+					else:
+						basebot_qa_memory(QA_BOT) #chatbot with knowledge base and memory
+			else:#chatbot with no knowledge base
+				if st.session_state.memoryless: #memoryless chatbot with no knowledge base and no memory
+					basebot(QA_BOT)
+				else:
+					basebot_memory(QA_BOT) #chatbot with no knowledge base but with memory
+		
+		#Dialogic Agent
+				
+		elif st.session_state.option == 'Chatbot Management': #ensure that it is for administrator or super_admin
+			if st.session_state.user['profile_id'] == SA or st.session_state.user['profile_id'] == AD:
+				st.subheader(f":green[{st.session_state.option}]")
+				create_prompt_template(st.session_state.user['id'])
+				update_prompt_template(st.session_state.user['profile_id'])
+				st.subheader("OpenAI Chatbot Parameters Settings")
+				bot_settings_interface(st.session_state.user['profile_id'], st.session_state.user['school_id'])
+			else:
+				st.subheader(f":red[This option is accessible only to administrators only]")
+		
+		#Knowledge Base Tools
+		elif st.session_state.option == 'Files Management':
+			st.subheader(f":green[{st.session_state.option}]") 
+			display_files()
+			docs_uploader()
+			delete_files()
+
+		elif st.session_state.option == "Knowledge Base Editor":
+			st.subheader(f":green[{st.session_state.option}]") 
+			options = sac.steps(
+				items=[
+					sac.StepsItem(title='Step 1', description='Create a new knowledge base'),
+					sac.StepsItem(title='Step 2', description='Assign a knowledge base to a user'),
+					sac.StepsItem(title='Step 3', description='Delete a knowledge base (Optional)'),
+				],
+				format_func='title',
+				placement='vertical',
+				size='small'
+			)
+			if options == "Step 1":
+				st.subheader("KB created in the repository")
+				display_vectorstores()
+				st.subheader("Files available in the repository")
+				display_files()
+				create_vectorstore()
+			elif options == "Step 2":
+				st.subheader("KB created in the repository")
+				display_vectorstores()
+				vectorstore_selection_interface(st.session_state.user['id'])
+				link_profiles_to_vectorstore_interface(st.session_state.user['id'])
 	
-	
-	
+			elif options == "Step 3":
+				st.subheader("KB created in the repository")
+				display_vectorstores()
+				delete_vectorstores()
+
+		#Organisation Tools
+		elif st.session_state.option == "Users Management":
+			st.subheader(f":green[{st.session_state.option}]") 
+			sch_id, msg = process_user_profile(st.session_state.user["profile_id"])
+			rows = has_at_least_two_rows()
+			if rows >= 2:
+				#Password Reset
+				st.subheader("User accounts information")
+				df = display_accounts(sch_id)
+				st.warning("Password Management")
+				st.subheader("Reset passwords of users")
+				reset_passwords(df)
+		
+		elif st.session_state.option == "Org Management":
+			if st.session_state.user['profile_id'] == SA:
+				st.subheader(f":green[{st.session_state.option}]") 
+				#direct_vectorstore_function()
+				
+				if check_password(st.session_state.user["username"], SUPER_PWD):
+						st.write("To start creating your teachers account, please change the default password of your administrator account under profile settings")
+				else:
+					sch_id, msg = process_user_profile(st.session_state.user["profile_id"])
+					create_flag = False
+					rows = has_at_least_two_rows()
+					if rows >= 2:
+						create_flag = check_multiple_schools()
+					st.markdown("###")
+					st.write(msg)
+					st.markdown("###")
+					steps_options = sac.steps(
+								items=[
+									sac.StepsItem(title='step 1', description='Create Students and Teachers account of a new school', disabled=create_flag),
+									sac.StepsItem(title='step 2', description='Remove/Assign Teachers to Classes'),
+									sac.StepsItem(title='step 3', description='Change Teachers Profile'),
+									sac.StepsItem(title='step 4', description='Setting function access for profiles'),
+									sac.StepsItem(title='step 5', description='Reassign Students to Classes(Optional)'),
+									sac.StepsItem(title='step 6', description='Managing SQL Schema Tables',icon='radioactive'),
+								], format_func='title', placement='vertical', size='small'
+							)
+					if steps_options == "step 1":
+						if create_flag:
+							st.write("School created, click on Step 2")
+						else:
+							create_org_structure()
+					elif steps_options == "step 2":
+						remove_or_reassign_teacher_ui(sch_id)
+					elif steps_options == "step 3":
+						change_teacher_profile_ui(sch_id)
+					elif steps_options == "step 4":
+						link_users_to_app_function_ui(sch_id)
+					elif steps_options == "step 5":
+						reassign_student_ui(sch_id)
+					elif steps_options == "step 6":
+						st.subheader(":red[Managing SQL Schema Tables]")
+						st.warning("Please do not use this function unless you know what you are doing")
+						if st.checkbox("I know how to manage SQL Tables"):
+							st.subheader(":red[Zip Database - Download and upload a copy of the database]")
+							download_database()
+							upload_database()
+							if check_aws_secrets_exist():
+								st.subheader(":red[Upload Database to S3 - Upload a copy of the database to S3]")
+								upload_s3_database()
+								download_from_s3_and_unzip()
+							st.subheader(":red[Display and Edit Tables - please do so if you have knowledge of the current schema]")
+							manage_tables()
+							st.subheader(":red[Delete Table - Warning please use this function with extreme caution]")
+							delete_tables()
+							
+			else:
+				st.subheader(f":red[This option is accessible only to super administrators only]")
+
+		elif st.session_state.option == "Knowledge Map Generator":
+			st.subheader(f":green[{st.session_state.option}]") 
+			mode = sac.switch(label='Generative Mode :', value=True, checked='Coloured Map', unchecked='Process Chart', align='center', position='left', size='default', disabled=False)
+			subject, topic, levels = map_creation_form()
+			prompt = False
+			if subject and topic and levels:
+				if mode:
+					prompt = map_prompter_with_plantuml_form(subject, topic, levels)
+				else:
+					prompt = map_prompter(subject, topic, levels)
+			if prompt:
+				with st.spinner("Generating mindmap"):
+					st.write(f"Mindmap generated from the prompt: :orange[**{subject} {topic} {levels}**]")
+					if mode:
+						uml = generate_plantuml_mindmap(prompt)
+						image = render_diagram(uml)
+						st.image(image)
+					else:
+						syntax = generate_mindmap(prompt)
+						if syntax:
+							output_mermaid_diagram(syntax)
+						
+
+		elif st.session_state.option == "Audio Analytics":
+			st.subheader(f":green[{st.session_state.option}]") 
+			# Create form
+			subject = st.text_input("Subject:")
+			topic = st.text_input("Topic:")
+			assessment_type = st.selectbox("Type of Assessment:", ["Oral Assessment", "Content Assessment", "Transcribing No Assessment"])
+			result = record_myself()
+			if result is not None:
+				transcript, language = result
+				if assessment_type == "Transcribing No Assessment":
+					st.write(f"Transcript: {transcript}")
+					st.session_state.msg.append({"role": "assistant", "content": transcript})
+				else:
+					if subject and topic :
+						assessment_prompt(transcript, assessment_type, subject, topic, language)
+					else:
+						st.warning("Please fill in all the fields in the oral submission form")
+						
+		
+		elif st.session_state.option == "Profile Settings":
+			st.subheader(f":green[{st.session_state.option}]") 
+			#direct_vectorstore_function()
+			password_settings(st.session_state.user["username"])
+		
+		
+		elif st.session_state.option == 'Application Info':
+			st.subheader(f":green[{st.session_state.option}]") 
+			st.markdown("Application Information here")
+			pass
+
+		elif st.session_state.option == 'Logout':
+			if db_was_modified(DEFAULT_DB):
+				if check_aws_secrets_exist():
+					backup_s3_database()
+					for key in st.session_state.keys():
+						del st.session_state[key]
+					st.rerun()
+				elif st.session_state.user['profile_id'] == SA:
+					on = st.toggle('I do not want to download a copy of the database')
+					if on:
+						for key in st.session_state.keys():
+							del st.session_state[key]
+						st.rerun()
+					else:
+						download_database()
+						for key in st.session_state.keys():
+							del st.session_state[key]
+						st.rerun()
+				else:
+					for key in st.session_state.keys():
+						del st.session_state[key]
+					st.rerun()
+			else:
+				for key in st.session_state.keys():
+					del st.session_state[key]
+				st.rerun()
+			#check if SA or AD wants to save the database locally 
+			
+			pass
+	except Exception as e:
+		st.exception(e)
+
 if __name__ == "__main__":
 	main()
-

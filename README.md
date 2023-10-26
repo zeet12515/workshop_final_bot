@@ -1,1 +1,1 @@
-# workshop_final_bot
+"Framework created by yours truly - Joe Tay"

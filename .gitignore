@@ -1,3 +1,5 @@
-.venv/
-cache/
 secrets.toml
+.venv/
+*.csv
+References/
+database/
