@@ -1,6 +1,8 @@
 import streamlit as st
 from langchain.chat_models import ChatOpenAI
 import pandas as pd
+from authenticate import return_api_key
+import openai
 from pandasai import SmartDataframe
 from pandasai.llm.openai import OpenAI
 import matplotlib.pyplot as plt
@@ -52,13 +54,16 @@ def download_data(user_id, sch_id, profile):
 
 # PandasAI- A smart agent that can do visual analytics
 def pandas_ai(user_id, sch_id, profile):
+	openai.api_key = return_api_key()
+	os.environ["OPENAI_API_KEY"] = return_api_key()
 
 	# Upload CSV file using st.file_uploader
 	uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
-	if "openai_key" not in st.session_state:
-		st.session_state.openai_key = st.session_state.api_key
-		st.session_state.prompt_history = []
-		st.session_state.df = None
+	if "api_key" not in st.session_state:
+		st.session_state.api_key = return_api_key()
+	st.write("API key: ", st.session_state.api_key)
+	st.session_state.prompt_history = []
+	st.session_state.df = None
 
 	if uploaded_file is not None:
 		try:
@@ -76,7 +81,7 @@ def pandas_ai(user_id, sch_id, profile):
 		submitted = st.form_submit_button("Submit")
 		if submitted:
 			with st.spinner():
-				llm =ChatOpenAI(api_token=st.session_state.api_key)
+				llm =OpenAI(api_token=st.session_state.api_key)
 				df = SmartDataframe(
 					st.session_state.df,
 					config={

@@ -231,3 +231,5 @@ def render_diagram(uml):
     p = PlantUML("http://www.plantuml.com/plantuml/img/")
     image = p.processes(uml)
     return image
+
+

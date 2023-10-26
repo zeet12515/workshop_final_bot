@@ -1,6 +1,7 @@
 import streamlit as st
 import openai
 from authenticate import return_api_key
+from langchain.tools import YouTubeSearchTool
 # exercise 11
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
@@ -59,16 +60,17 @@ def wiki_search(query: str) -> str:
 	results = wikipedia.run(query)
 	return results
 
-@tool("Image Generator")
-def dalle_image_generator(query: str) -> str:
+
+def dalle_image_generator(query):
+	openai.api_key = return_api_key()
+	os.environ["OPENAI_API_KEY"] = return_api_key()
 	"Use this function to generate images from text"
-	llm = ChatOpenAI(temperature=0.9)
-	prompt = PromptTemplate(
-	input_variables=["image_desc"],
-	template="Generate a detailed prompt to generate an image based on the following description: {image_desc}",
+	response = openai.Image.create(
+	prompt=query,
+	n=1,
+	size="1024x1024"
 	)
-	chain = LLMChain(llm=llm, prompt=prompt)
-	image_url = DallEAPIWrapper().run(chain.run(query))
+	image_url = response['data'][0]['url']
 	return image_url
 
 def agent_bot():
@@ -125,56 +127,6 @@ def agent_bot():
 				"intermediate_steps"
 			]
 
-def agent_bot_no_memory():
-	st.subheader("🦜 LangChain Agent Smart Bot with Tools (No Memory)")
-	openai.api_key = return_api_key()
-	os.environ["OPENAI_API_KEY"] = return_api_key()
-
-	msgs = StreamlitChatMessageHistory()
-	
-	if len(msgs.messages) == 0 or st.sidebar.button("Reset chat history"):
-		msgs.clear()
-		msgs.add_ai_message("How can I help you?")
-		st.session_state.steps = {}
-
-	avatars = {"human": "user", "ai": "assistant"}
-	for idx, msg in enumerate(msgs.messages):
-		with st.chat_message(avatars[msg.type]):
-			# Render intermediate steps if any were saved
-			for step in st.session_state.steps.get(str(idx), []):
-				if step[0].tool == "_Exception":
-					continue
-				with st.status(
-					f"**{step[0].tool}**: {step[0].tool_input}", state="complete"
-				):
-					st.write(step[0].log)
-					st.write(step[1])
-			st.write(msg.content)
-
-	if prompt := st.chat_input(placeholder="Enter a query on the Internet"):
-		st.chat_message("user").write(prompt)
-
-		llm = ChatOpenAI(
-			model_name="gpt-3.5-turbo", openai_api_key=return_api_key(), streaming=True
-		)
-		tools = st.session_state.tools
-		chat_agent = ConversationalChatAgent.from_llm_and_tools(llm=llm, tools=tools)
-		executor = AgentExecutor.from_agent_and_tools(
-			agent=chat_agent,
-			tools=tools,
-			return_intermediate_steps=True,
-			handle_parsing_errors=True,
-		)
-		with st.chat_message("assistant"):
-			st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
-			inputs = {
-						'input': prompt,
-						'chat_history': [] }
-			response = executor(inputs, callbacks=[st_cb])
-			st.write(response["output"])
-			st.session_state.steps[str(len(msgs.messages) - 1)] = response[
-				"intermediate_steps"
-			]
 
 @st.cache_resource
 def load_gradio_kb():
@@ -217,12 +169,14 @@ def agent_management():
 			"Document Search": document_search,
 			"Wiki Search": wiki_search,
 			"Internet Search": DuckDuckGoSearchRun(name="Internet Search"),
+			"YouTube Search": YouTubeSearchTool(),
 		
 			}
 	else:
 		all_tools = {
 			"Wiki Search": wiki_search,
 			"Internet Search": DuckDuckGoSearchRun(name="Internet Search"),
+			"YouTube Search": YouTubeSearchTool(),
 		
 		}
 	
@@ -232,7 +186,7 @@ def agent_management():
 		"Select up to 3 tools:", list(all_tools.keys()), default=list(all_tools.keys())[:3]
 	)
 	if len(selected_tool_names) == 0:
-		st.stop()
+		st.write("Please select at least one tool.")	
 	else:
 		# Map selected tool names to their respective functions
 		tools = [all_tools[name] for name in selected_tool_names]

@@ -2683,3 +2683,1245 @@ def analyze_data(dfs: list[pd.DataFrame]) ->dict:
 2023-09-27 15:43:31 [INFO] Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
 2023-09-27 15:43:31 [INFO] Answer: {'type': 'plot', 'value': 'exports/charts/temp_chart.png'}
 2023-09-27 15:43:31 [INFO] Executed in: 15.808902978897095s
+2023-10-26 18:37:16 [INFO] Question: How many hellos are there
+2023-10-26 18:37:16 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 18:37:16 [INFO] Prompt ID: d74afbd2-2bc9-4e79-a0e1-138aaa176d62
+2023-10-26 18:37:16 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+</dataframe>
+
+<conversation>
+User 1: How many hellos are there
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 18:37:16 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 18:37:18 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 18:37:18 [INFO] Question: How many hellos are there
+2023-10-26 18:37:18 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 18:37:18 [INFO] Prompt ID: 22b0cd9c-e487-4cff-8074-259f84630678
+2023-10-26 18:37:18 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+</dataframe>
+
+<conversation>
+User 1: How many hellos are there
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 18:37:19 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 18:41:32 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 18:41:32 [INFO] Question: How many hellos are there
+2023-10-26 18:41:32 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 18:41:32 [INFO] Prompt ID: 6656be1d-8df8-4e30-b945-9d6b63b3c936
+2023-10-26 18:41:32 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+4,25/10/2023 12:19:34,1,1,Your name is Joe.,Waht is my name,AI Assistant bot,41.6,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe! How can I assist you today?",I am Joe,AI Assistant bot,75.4,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe! How can I assist you today?",I am Joe,AI Assistant bot,75.4,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an AI, I don't have access to personal data about individuals unless it has been shared with me in the course of our conversation. I am designed to respect user privacy and confidentiality.",What is my name,AI Assistant bot,288.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. Speak like Yoda, I will. Boredom, a state of mind it is. Find interest in the world around you, you must. Engage in activities that stimulate your mind, you should. Remember, always in motion is the future. Exciting it can be, if open your mind, you do. Hmmmm.",I am bored,Prototype bot,379.6,0
+</dataframe>
+
+<conversation>
+User 1: How many hellos are there
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 18:41:32 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 18:41:53 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 18:41:53 [INFO] Question: how many hellos
+2023-10-26 18:41:53 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 18:41:53 [INFO] Prompt ID: 2fc802b8-8422-4419-a526-eb7bdb59ffed
+2023-10-26 18:41:53 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+</dataframe>
+
+<conversation>
+User 1: how many hellos
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 18:41:54 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 18:41:55 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 18:41:55 [INFO] Question: how many hellos
+2023-10-26 18:41:55 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 18:41:55 [INFO] Prompt ID: a56496ba-d7c9-4b65-8fc8-1a048aaca59d
+2023-10-26 18:41:55 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+</dataframe>
+
+<conversation>
+User 1: how many hellos
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 18:41:55 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 18:44:45 [INFO] Question: Hello 
+2023-10-26 18:44:45 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 18:44:45 [INFO] Prompt ID: afca0b18-9ab7-46b1-b67f-953e21b21c4e
+2023-10-26 18:44:45 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+</dataframe>
+
+<conversation>
+User 1: Hello 
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 18:44:46 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 18:44:48 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 18:44:48 [INFO] Question: Hello 
+2023-10-26 18:44:48 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 18:44:48 [INFO] Prompt ID: 78e57a7b-86c3-4574-98df-6ed568af875b
+2023-10-26 18:44:48 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+</dataframe>
+
+<conversation>
+User 1: Hello 
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 18:44:48 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 18:46:15 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 18:46:15 [INFO] Question: Hello 
+2023-10-26 18:46:15 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 18:46:15 [INFO] Prompt ID: f00d8158-80f2-457e-98b1-991ea277f78a
+2023-10-26 18:46:15 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+4,25/10/2023 12:19:34,1,1,Your name is Joe.,Waht is my name,AI Assistant bot,41.6,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe! How can I assist you today?",I am Joe,AI Assistant bot,75.4,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe! How can I assist you today?",I am Joe,AI Assistant bot,75.4,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an AI, I don't have access to personal data about individuals unless it has been shared with me in the course of our conversation. I am designed to respect user privacy and confidentiality.",What is my name,AI Assistant bot,288.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. Speak like Yoda, I will. Boredom, a state of mind it is. Find interest in the world around you, you must. Engage in activities that stimulate your mind, you should. Remember, always in motion is the future. Exciting it can be, if open your mind, you do. Hmmmm.",I am bored,Prototype bot,379.6,0
+</dataframe>
+
+<conversation>
+User 1: Hello 
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 18:46:15 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 18:51:39 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 18:51:39 [INFO] Question: Hello
+2023-10-26 18:51:39 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 18:51:39 [INFO] Prompt ID: 6baccf23-e902-4d26-aa90-28add4626825
+2023-10-26 18:51:39 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+</dataframe>
+
+<conversation>
+User 1: Hello
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 18:51:39 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 18:51:41 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 18:51:41 [INFO] Question: Hello
+2023-10-26 18:51:41 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 18:51:41 [INFO] Prompt ID: ced99e81-ca90-4910-ae14-c2297b418ede
+2023-10-26 18:51:41 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+</dataframe>
+
+<conversation>
+User 1: Hello
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 18:51:41 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:04:03 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 19:04:03 [INFO] Question: Hello
+2023-10-26 19:04:03 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 19:04:03 [INFO] Prompt ID: c634f0e3-4d44-4107-ac85-221cf82d53a7
+2023-10-26 19:04:03 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+</dataframe>
+
+<conversation>
+User 1: Hello
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:04:03 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:04:24 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 19:04:24 [INFO] Question: Hello
+2023-10-26 19:04:24 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 19:04:24 [INFO] Prompt ID: ea0552c1-bf67-4fdc-afb7-f093600fa0a8
+2023-10-26 19:04:24 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+</dataframe>
+
+<conversation>
+User 1: Hello
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:04:25 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:04:26 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 19:04:26 [INFO] Question: Hello
+2023-10-26 19:04:26 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 19:04:26 [INFO] Prompt ID: 27071845-40d9-4c9e-9ed1-15662e8c8e21
+2023-10-26 19:04:26 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+4,25/10/2023 12:19:34,1,1,Your name is Joe.,Waht is my name,AI Assistant bot,41.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. Speak like Yoda, I will. Boredom, a state of mind it is. Find interest in the world around you, you must. Engage in activities that stimulate your mind, you should. Remember, always in motion is the future. Exciting it can be, if open your mind, you do. Hmmmm.",I am bored,Prototype bot,379.6,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an AI, I don't have access to personal data about individuals unless it has been shared with me in the course of our conversation. I am designed to respect user privacy and confidentiality.",What is my name,AI Assistant bot,288.6,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe! How can I assist you today?",I am Joe,AI Assistant bot,75.4,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe! How can I assist you today?",I am Joe,AI Assistant bot,75.4,0
+</dataframe>
+
+<conversation>
+User 1: Hello
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:04:27 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:12:59 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 19:12:59 [INFO] Question: Hello
+2023-10-26 19:12:59 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 19:12:59 [INFO] Prompt ID: d5bf0c4a-c421-4fcc-8848-eaabe268a2ec
+2023-10-26 19:12:59 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+</dataframe>
+
+<conversation>
+User 1: Hello
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:13:00 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:13:01 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 19:13:01 [INFO] Question: Hello
+2023-10-26 19:13:01 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 19:13:01 [INFO] Prompt ID: 7e38bf19-e29e-4fef-b739-740ea3ecf992
+2023-10-26 19:13:01 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+</dataframe>
+
+<conversation>
+User 1: Hello
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:13:01 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:13:47 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 19:13:47 [INFO] Question: Hello
+2023-10-26 19:13:47 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 19:13:47 [INFO] Prompt ID: caba3591-d814-40b7-9164-bfdbd6fb9e72
+2023-10-26 19:13:47 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+</dataframe>
+
+<conversation>
+User 1: Hello
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:13:48 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:16:48 [INFO] Question: Hello
+2023-10-26 19:16:48 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 19:16:48 [INFO] Prompt ID: bb1ddcbc-19f6-49bd-82ee-2f541363c534
+2023-10-26 19:16:48 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+</dataframe>
+
+<conversation>
+User 1: Hello
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:16:49 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:16:52 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 19:16:52 [INFO] Question: Hello
+2023-10-26 19:16:52 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 19:16:52 [INFO] Prompt ID: 09543c13-bbed-49e4-b701-c34ce50ff2f2
+2023-10-26 19:16:52 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+</dataframe>
+
+<conversation>
+User 1: Hello
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:16:52 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:17:26 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 19:17:26 [INFO] Question: Hello
+2023-10-26 19:17:26 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 19:17:26 [INFO] Prompt ID: 286437ea-64af-4b20-8e19-34f95f6266ce
+2023-10-26 19:17:26 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 408 rows and 10 columns.
+This is the metadata of the dataframe dfs[0]:
+unix,date,symbol,open,high,low,close,Volume XRP,Volume USDT,tradecount
+5403746623,2021-02-15 00:00:00,XRP/USDT,0.5935,0.6056,0.5,0.55,5382657158,9505513504,1492655
+4581523116,2021-02-13 00:00:00,XRP/USDT,0.6108,0.646,0.5401,0.6348,1250064930,1430684198,1931300
+2500868568,2021-02-12 00:00:00,XRP/USDT,0.5291,0.6216,0.5204,0.6107,5661624287,1064927334,1676167
+1214498371,2021-02-14 00:00:00,XRP/USDT,0.6348,0.6428,0.56,0.5935,5130825209,7371885276,1231703
+3821969032,2021-02-16 00:00:00,XRP/USDT,0.55,0.5518,0.5443,0.545,4554317309,8993821628,7753
+</dataframe>
+
+<conversation>
+User 1: Hello
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:17:27 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:18:02 [INFO] error_code=None error_message='Prompt must be length 1000 or less. Your prompt length is 1335. Please reduce your prompt length.' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:18:43 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 19:18:43 [INFO] Question: Hey
+2023-10-26 19:18:43 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 19:18:43 [INFO] Prompt ID: fe5c0d86-c4c5-4c62-ade9-40571f57cbaf
+2023-10-26 19:18:43 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+</dataframe>
+
+<conversation>
+User 1: Hey
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:18:43 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:18:44 [WARNING] WARNING! api_token is not default parameter.
+                    api_token was transferred to model_kwargs.
+                    Please confirm that api_token is what you intended.
+2023-10-26 19:18:44 [INFO] Question: Hey
+2023-10-26 19:18:44 [INFO] Running PandasAI with langchain_openai-chat LLM...
+2023-10-26 19:18:44 [INFO] Prompt ID: 9e2b8c33-16e0-4997-a43f-f42d292bc3a8
+2023-10-26 19:18:44 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+</dataframe>
+
+<conversation>
+User 1: Hey
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:18:44 [INFO] error_code=None error_message='Unrecognized request argument supplied: api_token' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2023-10-26 19:20:25 [INFO] Question: Hey
+2023-10-26 19:20:25 [INFO] Running PandasAI with openai LLM...
+2023-10-26 19:20:25 [INFO] Prompt ID: 19d08b98-092b-427b-80c9-66c9c90eaf5d
+2023-10-26 19:20:25 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 18 rows and 9 columns.
+This is the metadata of the dataframe dfs[0]:
+data_id,date,user_id,profile_id,chatbot_ans,user_prompt,function_name,tokens,response_rating
+2,25/10/2023 12:19:02,1,1,"I'm sorry, but as an A...",What is my name,AI Assistant bot,288.6,0
+1,25/10/2023 12:18:54,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+3,25/10/2023 12:19:26,1,1,"Nice to meet you, Joe!...",I am Joe,AI Assistant bot,75.4,0
+4,25/10/2023 12:19:34,1,1,Your name is Joe....,Waht is my name,AI Assistant bot,41.6,0
+5,26/10/2023 10:40:48,1,1,"Hello, bored you are. ...",I am bored,Prototype bot,379.6,0
+</dataframe>
+
+<conversation>
+User 1: Hey
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-26 19:20:36 [INFO] Code generated:
+```
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+    # Prepare: No preprocessing or cleaning needed
+    
+    # Process: Filter the dataframe based on the user_id and user_prompt
+    filtered_df = dfs[0][(dfs[0]['user_id'] == 1) & (dfs[0]['user_prompt'] == 'What is my name')]
+    
+    # Analyze: Get the unique values in the response_rating column
+    unique_ratings = filtered_df['response_rating'].unique()
+    
+    # Return the result as a string
+    result = f"The unique response ratings for the user with ID 1 and prompt 'What is my name' are: {', '.join(map(str, unique_ratings))}"
+    return {"type": "string", "value": result}
+```
+
+2023-10-26 19:20:36 [INFO] Saving charts to exports/charts/19d08b98-092b-427b-80c9-66c9c90eaf5d.png
+2023-10-26 19:20:36 [INFO] 
+Code running:
+```
+def analyze_data(dfs: list[pd.DataFrame]) ->dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in exports/charts/19d08b98-092b-427b-80c9-66c9c90eaf5d.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "exports/charts/19d08b98-092b-427b-80c9-66c9c90eaf5d.png" }
+    """
+    filtered_df = dfs[0][(dfs[0]['user_id'] == 1) & (dfs[0]['user_prompt'] == 'What is my name')]
+    unique_ratings = filtered_df['response_rating'].unique()
+    result = f"The unique response ratings for the user with ID 1 and prompt 'What is my name' are: {', '.join(map(str, unique_ratings))}"
+    return {'type': 'string', 'value': result}
+        ```
+2023-10-26 19:20:36 [INFO] Answer: {'type': 'string', 'value': "The unique response ratings for the user with ID 1 and prompt 'What is my name' are: 0"}
+2023-10-26 19:20:36 [INFO] Executed in: 10.820558786392212s
+2023-10-26 19:20:54 [INFO] error_code=None error_message='Prompt must be length 1000 or less. Your prompt length is 2393. Please reduce your prompt length.' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
