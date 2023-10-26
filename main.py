@@ -53,7 +53,7 @@ from k_map import (
 	render_diagram,
 	output_mermaid_diagram
 )
-from audio import record_myself,assessment_prompt
+#from audio import record_myself,assessment_prompt
 from bot_settings import bot_settings_interface, load_bot_settings
 from PIL import Image
 import configparser
@@ -235,7 +235,7 @@ def main():
 					]),
 					sac.MenuItem('GenAI Application', icon='book', children=[
 						sac.MenuItem('AI Analytics', icon='chat-square-dots', disabled=is_function_disabled('AI Analytics')),
-						sac.MenuItem('Audio Analytics', icon='file-arrow-up', disabled=is_function_disabled('Audio Analytics')),
+						#sac.MenuItem('Audio Analytics', icon='file-arrow-up', disabled=is_function_disabled('Audio Analytics')),
 						sac.MenuItem('Knowledge Map Generator', icon='database-fill-up',disabled=is_function_disabled('Knowledge Map Generator')),
 					]),
 					sac.MenuItem('Organisation Tools', icon='buildings', children=[
@@ -494,23 +494,23 @@ def main():
 							output_mermaid_diagram(syntax)
 						
 
-		elif st.session_state.option == "Audio Analytics":
-			st.subheader(f":green[{st.session_state.option}]") 
-			# Create form
-			subject = st.text_input("Subject:")
-			topic = st.text_input("Topic:")
-			assessment_type = st.selectbox("Type of Assessment:", ["Oral Assessment", "Content Assessment", "Transcribing No Assessment"])
-			result = record_myself()
-			if result is not None:
-				transcript, language = result
-				if assessment_type == "Transcribing No Assessment":
-					st.write(f"Transcript: {transcript}")
-					st.session_state.msg.append({"role": "assistant", "content": transcript})
-				else:
-					if subject and topic :
-						assessment_prompt(transcript, assessment_type, subject, topic, language)
-					else:
-						st.warning("Please fill in all the fields in the oral submission form")
+		# elif st.session_state.option == "Audio Analytics":
+		# 	st.subheader(f":green[{st.session_state.option}]") 
+		# 	# Create form
+		# 	subject = st.text_input("Subject:")
+		# 	topic = st.text_input("Topic:")
+		# 	assessment_type = st.selectbox("Type of Assessment:", ["Oral Assessment", "Content Assessment", "Transcribing No Assessment"])
+		# 	result = record_myself()
+		# 	if result is not None:
+		# 		transcript, language = result
+		# 		if assessment_type == "Transcribing No Assessment":
+		# 			st.write(f"Transcript: {transcript}")
+		# 			st.session_state.msg.append({"role": "assistant", "content": transcript})
+		# 		else:
+		# 			if subject and topic :
+		# 				assessment_prompt(transcript, assessment_type, subject, topic, language)
+		# 			else:
+		# 				st.warning("Please fill in all the fields in the oral submission form")
 						
 		
 		elif st.session_state.option == "Profile Settings":
