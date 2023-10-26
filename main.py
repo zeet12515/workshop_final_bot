@@ -191,10 +191,26 @@ def main():
 		if "func_options" not in st.session_state:
 			st.session_state.func_options = {}
 			initialize_session_state(MENU_FUNCS, True)
-
 		if "tools" not in st.session_state:
 			st.session_state.tools = []
-		
+		if "form_title" not in st.session_state:
+			st.session_state.form_title = "Message Generator"
+		if "question_1" not in st.session_state:
+			st.session_state.question_1 = "Name"
+		if "question_2" not in st.session_state:
+			st.session_state.question_2 = "Occupation"
+		if "question_3" not in st.session_state:
+			st.session_state.question_3 = "Subject"
+		if "question_4" not in st.session_state:
+			st.session_state.question_4 = "Message"
+		if "question_5" not in st.session_state:
+			st.session_state.question_5 = "Number of words"
+		if "my_form_template" not in st.session_state:
+			st.session_state.my_form_template = "To help you write your email, You may refer to this resources to answer your query,{resource},{source}"
+		if "my_app_template" not in st.session_state:
+			st.session_state.my_app_template = "Pretend you are a {q2}, your name is {q1}, I want you to write an email on {q4} on the subject {q3} , the number of words is {q5}"
+		if "my_app_template_advance" not in st.session_state:
+			st.session_state.my_app_template_advance = "Pretend you are a helpful assistant, Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. Search Result: {resource} {source}. History of conversation: {mem}.You must quote the source of the Search Result if you are using the search result as part of the answer"
 		
 		create_dbs()
 		initialise_admin_account()

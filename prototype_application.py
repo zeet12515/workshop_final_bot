@@ -145,9 +145,14 @@ def prompt_template_prototype(prompt):
 		docs = st.session_state.vs.similarity_search(prompt)
 		resource = docs[0].page_content
 		source = docs[0].metadata
+	else:
+		source = ""
+		resource = ""
+
 	if "memory" not in st.session_state:
 		st.session_state.memory = ConversationBufferWindowMemory(k=st.session_state.k_memory)
 	mem = st.session_state.memory.load_memory_variables({})
+
 	#st.write(resource)
 	st.session_state.my_app_template_advance = advance_prompt_template(mem, source, resource)
 	
