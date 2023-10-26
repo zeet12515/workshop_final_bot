@@ -12,24 +12,26 @@ from langchain.memory import ConversationSummaryBufferMemory
 from langchain.memory import ConversationBufferWindowMemory
 from langchain.chat_models import ChatOpenAI
 
-if "form_title" not in st.session_state:
-	st.session_state.form_title = "Message Generator"
-if "question_1" not in st.session_state:
-	st.session_state.question_1 = "Name"
-if "question_2" not in st.session_state:
-	st.session_state.question_2 = "Occupation"
-if "question_3" not in st.session_state:
-	st.session_state.question_3 = "Subject"
-if "question_4" not in st.session_state:
-	st.session_state.question_4 = "Message"
-if "question_5" not in st.session_state:
-	st.session_state.question_5 = "Number of words"
-if "my_form_template" not in st.session_state:
-	st.session_state.my_form_template = "To help you write your email, You may refer to this resources to answer your query,{resource},{source}"
-if "my_app_template" not in st.session_state:
-	st.session_state.my_app_template = "Pretend you are a {q2}, your name is {q1}, I want you to write an email on {q4} on the subject {q3} , the number of words is {q5}"
-if "my_app_template_advance" not in st.session_state:
-	st.session_state.my_app_template_advance = "Pretend you are a helpful assistant, Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. Search Result: {resource} {source}. History of conversation: {mem}.You must quote the source of the Search Result if you are using the search result as part of the answer"
+# if "form_title" not in st.session_state:
+# 	st.session_state.form_title = "Message Generator"
+# if "question_1" not in st.session_state:
+# 	st.session_state.question_1 = "Name"
+# if "question_2" not in st.session_state:
+# 	st.session_state.question_2 = "Occupation"
+# if "question_3" not in st.session_state:
+# 	st.session_state.question_3 = "Subject"
+# if "question_4" not in st.session_state:
+# 	st.session_state.question_4 = "Message"
+# if "question_5" not in st.session_state:
+# 	st.session_state.question_5 = "Number of words"
+# if "my_form_template" not in st.session_state:
+# 	st.session_state.my_form_template = "To help you write your email, You may refer to this resources to answer your query,{resource},{source}"
+# if "my_app_template" not in st.session_state:
+# 	st.session_state.my_app_template = "Pretend you are a {q2}, your name is {q1}, I want you to write an email on {q4} on the subject {q3} , the number of words is {q5}"
+# if "my_app_template_advance" not in st.session_state:
+# 	st.session_state.my_app_template_advance = """Pretend you are a helpful assistant, Use the following pieces of context to answer the question at the end. 
+# 	If you don't know the answer, just say that you don't know, don't try to make up an answer. Search Result: {resource},  {source}. 
+# 	History of conversation: {mem}.You must quote the source of the Search Result if you are using the search result as part of the answer"""
 
 def form_input():
 	with st.form("my_form"):
@@ -76,40 +78,46 @@ def chatbot_settings():
 
 def prompt_template_settings():
 	st.info("You can use the following variables which is link to your first 5 questions in your form prompt inputs: {q1}, {q2}, {q3}, {q4}, {q5}")
-	form_input = st.text_area("Enter your form prompt:", value = st.session_state.my_app_template )
+	form_input = st.text_area("Enter your form prompt:", value = st.session_state.my_app_template, height=300 )
 	st.info("Enter your app prompt template here, you can add the following variables: {source}, {resource} ")
-	prompt_template = st.text_area("Enter your application prompt design", value = st.session_state.my_form_template)
+	prompt_template = st.text_area("Enter your application prompt design", value = st.session_state.my_form_template, height=300)
 	if st.button("Update Prompt Template", key = 2):
 		st.session_state.my_app_template = form_input
 		st.session_state.my_form_template = prompt_template
 
 def advance_prompt_template_settings():
 	st.info("You can use the following variables in your prompt template: {mem}, {source}, {resource}")
-	prompt_template = st.text_area("Enter your prompt template here:", value = st.session_state.my_app_template_advance)
+	prompt_template = st.text_area("Enter your prompt template here:", value = st.session_state.my_app_template_advance, height=300)
 	if st.button("Update Prompt Template"):
 		st.session_state.my_app_template_advance = prompt_template
 
 def advance_prompt_template(memory, source, resource):
-	return st.session_state.my_app_template_advance.format( mem=memory, source=source, resource=resource)
+	text = st.session_state.my_app_template_advance
+	return text.format( mem=memory, source=source, resource=resource)
 
 def prompt_template(results):
-	return st.session_state.my_app_template.format(q1=results[0], q2=results[1], q3=results[2], q4=results[3], q5=results[4])
+	text = st.session_state.my_app_template
+	return text.format(q1=results[0], q2=results[1], q3=results[2], q4=results[3], q5=results[4])
 
 def form_template(source, resource):
-	return st.session_state.my_form_template.format(source=source, resource=resource)
+	text = st.session_state.my_form_template
+	return text.format(source=source, resource=resource)
 
 def my_first_app(bot_name):
 	st.subheader("Protyping a chatbot")
+	with st.expander("Prototype Settings"):
+		st.write("Current Form Template: ", st.session_state.my_form_template)
+		st.write("Current Prompt Template: ", st.session_state.my_app_template)
 	results = ""
 	results = form_input()
 	if results != False:
 		form_output = prompt_template(results)
-		#st.write("Current Prompt Template: ", st.session_state.chatbot)
 		basic_bot(form_output , bot_name)
 
 def my_first_app_advance(bot_name):
 	st.subheader("Protyping a chatbot")
-	#st.write("Current Prompt Template: ", st.session_state.chatbot)
+	with st.expander("Prototype Settings"):
+		st.write("Current Prompt Template: ", st.session_state.my_app_template_advance)
 	prototype_advance_bot(bot_name)
 
 def prototype_settings():
@@ -154,9 +162,9 @@ def prompt_template_prototype(prompt):
 	mem = st.session_state.memory.load_memory_variables({})
 
 	#st.write(resource)
-	st.session_state.my_app_template_advance = advance_prompt_template(mem, source, resource)
+	prompt = advance_prompt_template(mem, source, resource)
 	
-	return st.session_state.my_app_template_advance
+	return prompt
 
 
 #chat completion memory for streamlit using memory buffer
