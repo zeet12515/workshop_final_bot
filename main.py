@@ -59,9 +59,9 @@ from PIL import Image
 import configparser
 import ast
 from machine import upload_csv, plot_prices, prepare_data_and_train, plot_predictions, load_teachable_machines
-from chatbot import call_api
+from chatbot import call_api, rule_based
 from agent import agent_bot, agent_management
-from prototype_application import my_first_app, prototype_settings
+from prototype_application import my_first_app, prototype_settings, my_first_app_advance
 
 class ConfigHandler:
 	def __init__(self):
@@ -277,9 +277,15 @@ def main():
 			vectorstore_selection_interface(st.session_state.user['id'])
 		
 		elif st.session_state.option == 'Prototype Application':
-			my_first_app(PROTOTYPE)
+			st.subheader(f":green[{st.session_state.option}]")
+			on = st.toggle('Advance Chatbot')
+			if on:
+				my_first_app_advance(PROTOTYPE)
+			else:
+				my_first_app(PROTOTYPE)
 			pass
 		elif st.session_state.option == 'Prototype Settings':
+			st.subheader(f":green[{st.session_state.option}]")
 			prototype_settings()
 			pass
 
@@ -300,6 +306,7 @@ def main():
 			st.subheader(f":green[{st.session_state.option}]")
 			load_teachable_machines()
 		elif st.session_state.option == 'Rule Based Chatbot':
+			rule_based()
 			pass
 		elif st.session_state.option == 'Open AI API Call':
 			st.subheader(f":green[{st.session_state.option}]")

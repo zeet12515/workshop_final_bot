@@ -147,9 +147,12 @@ def bot_settings_interface(profile_id, school_id=None):
 				# Fetch all schools for SA to select from
 				cursor.execute("SELECT school_id, school_name FROM Schools")
 				schools = cursor.fetchall()
-				school_choices = {school[1]: school[0] for school in schools}
-				selected_school_name = st.selectbox("Select School for Propagation:", list(school_choices.keys()))
-				selected_school_id = school_choices[selected_school_name]
+				if schools:
+					school_choices = {school[1]: school[0] for school in schools}
+					selected_school_name = st.selectbox("Select School for Propagation:", list(school_choices.keys()))
+					selected_school_id = school_choices[selected_school_name]
+				else:
+					st.warning("No schools found in the database.")
 			elif profile_id == AD:
 				# AD can only propagate to their school, so no need for a selectbox
 				selected_school_id = school_id
@@ -157,6 +160,9 @@ def bot_settings_interface(profile_id, school_id=None):
 			
 			if submit_button:
 				store_bot_settings(st.session_state.user['id'], temp, presence_penalty, frequency_penalty)
-				if should_propagate:
-					propagate_bot_settings(profile_id, temp, presence_penalty, frequency_penalty, selected_school_id)
-				st.success("Parameters saved!")
+				if schools:
+					if should_propagate:
+						propagate_bot_settings(profile_id, temp, presence_penalty, frequency_penalty, selected_school_id)
+					st.success("Parameters saved!")
+				else:
+					st.warning("No schools found in the database. Unable to propagate settings.")

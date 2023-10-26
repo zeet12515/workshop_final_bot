@@ -2,6 +2,7 @@ import openai
 import streamlit as st
 from authenticate import return_api_key
 import os
+import pandas as pd
 
 def call_api():
 	prompt_design = st.text_input("Enter your the prompt design for the API call:", value="You are a helpful assistant.")
@@ -35,3 +36,41 @@ def api_call(p_design, p_query):
 		s = str(response["usage"]["total_tokens"])
 		st.markdown("**Total tokens used:**")
 		st.write(s)
+
+def rule_based():
+	st.write("Rules for the chatbot:")
+	df = pd.DataFrame(
+		[
+			{"prompt": "Hello", "response": "Hi there what can I do for you"},
+			{
+				"prompt": "What is your name?",
+				"response": "My name is EAI , an electronic artificial being"
+			},
+			{"prompt": "How old are you?", "response": "Today is my birthday!"},
+		]
+	)
+
+	edited_df = st.data_editor(df, num_rows="dynamic")
+	st.divider()
+	# Initialize chat history
+	if "messages" not in st.session_state:
+		st.session_state.messages = []
+
+	# Display chat messages from history on app rerun
+	for message in st.session_state.messages:
+		with st.chat_message(message["role"]):
+			st.markdown(message["content"])
+
+	# React to user input
+	if prompt := st.chat_input("Enter your prompt"):
+		if prompt in edited_df["prompt"].values:
+			reply = edited_df.loc[edited_df["prompt"] == prompt]["response"].values[0]
+		else:
+			reply = "I don't understand"
+
+		with st.chat_message("user"):
+			st.write(prompt)
+			st.session_state.messages.append({"role": "user", "content": prompt})
+		with st.chat_message("assistant"):
+			st.write(reply)
+			st.session_state.messages.append({"role": "assistant", "content": reply})

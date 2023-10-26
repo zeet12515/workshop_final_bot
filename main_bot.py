@@ -283,6 +283,8 @@ def chat_completion(prompt):
 			{"role": "user", "content": prompt},
 		],
 		temperature=st.session_state.temp, #settings option
+		presence_penalty=st.session_state.presence_penalty, #settings option
+		frequency_penalty=st.session_state.frequency_penalty, #settings option
 		stream=True #settings option
 	)
 	return response
