@@ -79,12 +79,13 @@ def prototype_settings():
 	tab1, tab2, tab3, tab4 = st.tabs(["Prototype Input Settings", "Template settings", "Prototype Chatbot Settings", "KB settings"])
 
 	with tab1:
-		st.subheader("Prototype Input Settings")
+		st.subheader("Prototype Input and template Settings")
 		form_settings()
+		prompt_template_settings()
 
 	with tab2:
 		st.subheader("Template settings")
-		prompt_template_settings()
+		
 		
 	with tab3:
 		st.subheader("Prototype Chatbot Settings")
